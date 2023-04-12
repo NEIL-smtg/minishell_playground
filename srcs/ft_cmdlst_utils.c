@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 01:28:31 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/12 01:30:38 by suchua           ###   ########.fr       */
+/*   Updated: 2023/04/12 18:41:17 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ void	print_lst(t_cmdlst *lst)
 	while (tmp)
 	{
 		ft_printf("%s\n", tmp->cmd);
+		ft_printf("open_brac = %d close_brac = %d within_brac = %d\n", tmp->open_brac, tmp->closed_brac, tmp->within_brac);
 		tmp = tmp->next;
 	}
 }

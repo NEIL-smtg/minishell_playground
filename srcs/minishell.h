@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 19:22:17 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/12 01:46:34 by suchua           ###   ########.fr       */
+/*   Updated: 2023/04/12 18:35:51 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,10 +64,9 @@ typedef struct s_file_num
 typedef struct s_cmdlst
 {
 	char				*cmd;
-	int					relation;
-	int					no_brac;
 	int					open_brac;
-	int					close_brac;
+	int					closed_brac;
+	int					within_brac;
 	struct s_cmdlst		*next;
 }	t_cmdlst;
 

@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 01:17:32 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/12 01:41:41 by suchua           ###   ########.fr       */
+/*   Updated: 2023/04/12 21:52:41 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,26 +15,28 @@
 void	fill_cmd_info(t_cmdlst **lst)
 {
 	t_cmdlst	*tmp;
+	t_cmdlst	*prev;
 
 	tmp = *lst;
+	prev = NULL;
 	while (tmp)
 	{
+		tmp->within_brac = 0;
 		tmp->open_brac = 0;
-		tmp->close_brac = 0;
-		tmp->no_brac = 0;
-		tmp->relation = NORMAL;
+		tmp->closed_brac = 0;
 		if (ft_strchr(tmp->cmd, '('))
+		{
 			tmp->open_brac = 1;
-		else if (ft_strchr(tmp->cmd, ')'))
-			tmp->close_brac = 1;
-		else
-			tmp->no_brac = 0;
-		if (tmp->next && cmdlst_is_double(tmp->next->cmd, "||"))
-			tmp->relation = DOUBLE_PIPE;
-		else if (tmp->next && cmdlst_is_double(tmp->next->cmd, "&&"))
-			tmp->relation = DOUBLE_N;
-		else if (tmp->next && cmdlst_is_double(tmp->next->cmd, "|"))
-			tmp->relation = PIPE;
+			tmp->within_brac = 1;
+		}
+		if (ft_strchr(tmp->cmd, ')'))
+		{
+			tmp->closed_brac = 1;
+			tmp->within_brac = 1;
+		}
+		if (prev && prev->within_brac && !prev->closed_brac)
+			tmp->within_brac = 1;
+		prev = tmp;
 		tmp = tmp->next;
 	}
 }
@@ -63,7 +65,7 @@ void	interpret_cmd(char *cmd, t_cmdlst **lst)
 			break ;
 		ft_cmdlst_addback(lst, split[i]);
 		if (s)
-			memset(s, 0, ft_strlen(s));
+			ft_memset(s, 0, ft_strlen(s));
 		++i;
 	}
 	fill_cmd_info(lst);

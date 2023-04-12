@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 18:55:41 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/11 23:15:37 by suchua           ###   ########.fr       */
+/*   Updated: 2023/04/12 18:27:46 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ void	ft_handle_cmd(t_shell *info)
 
 	// s_cmd = ft_split(info->input_line, '|');
 	// s_cmd = ft_smart_split(info->input_line, info);
-	info->input_size = get_2d_arr_size(s_cmd);
+	// info->input_size = get_2d_arr_size(s_cmd);
 	if (check_wild_card(&s_cmd) == -1 || exec_now(info, s_cmd))
 	{
 		ft_free2d(s_cmd);
