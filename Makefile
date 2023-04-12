@@ -3,7 +3,8 @@ MAN_FILES	=	main ft_signal_handling utils utils2 ft_simple_cmd ft_echo ft_export
 				ft_exec ft_exec_utils ft_redirections \
 				ft_exec_utils2 ft_setdup ft_wildcard \
 				ft_wildcard_utils ft_wildcard_utils2 ft_wildcard_error \
-				ft_dangling ft_dangling_pipe ft_cmdlst ft_cmdlst_utils
+				ft_dangling ft_dangling_pipe \
+				ft_cmdlst ft_cmdlst_utils ft_cmdexec
 SRC_DIR		=	srcs/
 OBJS_DIR	=	objs/
 LIBFT_DIR	=	Libft/

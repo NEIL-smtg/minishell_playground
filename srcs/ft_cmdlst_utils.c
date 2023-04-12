@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 01:28:31 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/12 18:41:17 by suchua           ###   ########.fr       */
+/*   Updated: 2023/04/13 02:18:45 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ void	ft_cmdlst_addback(t_cmdlst	**lst, char *s)
 	new = ft_calloc(1, sizeof(t_cmdlst));
 	new->cmd = ft_strdup(s);
 	new->next = NULL;
+	new->prev = NULL;
 	if (!lst || !*lst)
 		*lst = new;
 	else
@@ -53,6 +54,7 @@ void	ft_cmdlst_addback(t_cmdlst	**lst, char *s)
 		tmp = *lst;
 		while (tmp->next)
 			tmp = tmp->next;
+		new->prev = tmp;
 		tmp->next = new;
 	}
 }

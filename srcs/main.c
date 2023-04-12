@@ -44,7 +44,9 @@ void	get_input(t_shell *info)
 		}
 		add_history(info->input_line);
 		interpret_cmd(info->input_line, &info->cmdlst);
-		ft_handle_cmd(info);
+		ft_cmdexec(info);
+		ft_free_cmdlst(&info->cmdlst);
+		// ft_handle_cmd(info);
 		free(info->input_line);
 	}
 }

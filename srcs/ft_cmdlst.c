@@ -6,11 +6,23 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 01:17:32 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/12 21:52:41 by suchua           ###   ########.fr       */
+/*   Updated: 2023/04/13 02:17:50 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	remove_brac(t_cmdlst **node)
+{
+	t_cmdlst	*tmp;
+	int			i;
+	
+	tmp = *node;
+	i = -1;
+	while (tmp->cmd[++i])
+		if (tmp->cmd[i] == ')' || tmp->cmd[i] == '(')
+			tmp->cmd[i] = 32;
+}
 
 void	fill_cmd_info(t_cmdlst **lst)
 {
@@ -36,6 +48,7 @@ void	fill_cmd_info(t_cmdlst **lst)
 		}
 		if (prev && prev->within_brac && !prev->closed_brac)
 			tmp->within_brac = 1;
+		remove_brac(&tmp);
 		prev = tmp;
 		tmp = tmp->next;
 	}
@@ -69,6 +82,8 @@ void	interpret_cmd(char *cmd, t_cmdlst **lst)
 		++i;
 	}
 	fill_cmd_info(lst);
-	print_lst(*lst);
-	ft_free_cmdlst(lst);
+	ft_free2d(split);
+	free(s);
+	// print_lst(*lst);
+	// ft_free_cmdlst(lst);
 }

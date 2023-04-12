@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 19:22:17 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/12 18:35:51 by suchua           ###   ########.fr       */
+/*   Updated: 2023/04/13 02:17:59 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,8 @@ typedef struct s_cmdlst
 	int					open_brac;
 	int					closed_brac;
 	int					within_brac;
+	int					relation;
+	struct s_cmdlst		*prev;
 	struct s_cmdlst		*next;
 }	t_cmdlst;
 
@@ -139,6 +141,7 @@ t_files	*get_last_files(t_files *files);
 
 //cmdlst
 void	interpret_cmd(char *cmd, t_cmdlst **lst);
+void	ft_cmdexec(t_shell *info);
 
 //cmdlst utils
 void	ft_free_cmdlst(t_cmdlst **lst);
