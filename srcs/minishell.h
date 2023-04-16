@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 19:22:17 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/13 02:17:59 by suchua           ###   ########.fr       */
+/*   Updated: 2023/04/17 00:16:05 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,22 @@
 # define PIPE        3
 # define NORMAL      4
 
+
+//store the original setting of default terminal
+//reset terminal back to default setting before exiting the program
+//not sure if it matters
 typedef	struct s_term_setting
 {
 	struct termios	original_setting;
 }	t_term;
+
+
+//to store fd of redirections
+typedef struct s_redirlst
+{
+	int					fd;
+	struct	s_redirlst	*next;
+}	t_redirlst;
 
 //to store the files in wildcard
 typedef struct s_files
@@ -79,13 +91,12 @@ typedef struct s_shell
 	char		**ms_env;
 	char		*input_line;
 	int			ms_status;
-	int			**fd;
-	int			infile;
-	int			outfile;
-	int			input_size;
-	char		*outfile_name;
+	int			fd[2];
+	int			prevfd;
 	t_term		term;
 	t_cmdlst	*cmdlst;
+	t_redirlst	*infile;
+	t_redirlst	*outfile;
 }	t_shell;
 
 //check dangling
@@ -98,30 +109,15 @@ int		dangling_pipe(char *str);
 //signal
 void	init_signal(void);
 
-//built-in cmd
-void	ft_pwd(t_shell *info);
-void	ft_export(t_shell *info, char **cmd);
-void	ft_env(t_shell *info);
-void	ft_echo(t_shell *info, char **cmd);
-void	ft_unset(t_shell *info, char **cmd);
-void	ft_cd(t_shell *info, char **cmd);
+//redir
+int		set_redir(t_shell *info, t_cmdlst **node);
 
-//redirection
-void	set_infile_outfile(t_shell *info, char *cmd);
-int		is_redir(char *cmd);
+//redirlst
+void	redirlst_addback(t_redirlst **rlst, int fd);
 
-//execve
-void	ft_handle_cmd(t_shell *info);
-int		exec_now(t_shell *info, char **cmd);
-void	set_dup(t_shell *info, char *nxt_cmd, int index);
-void	set_no_pipe_dup(t_shell *info);
-
-//execve utils
-void	close_all_pipe(t_shell *info, int n_pipe, int type);
-void	init_pipe_fd(t_shell *info);
-char	*get_cmd_path(char *cmd);
-void	wait_child(char **s_cmd, t_shell *info);
-int		is_builtin_cmd(char **cmd, t_shell *info);
+//heredoc
+char	*get_limiter(char *cmd);
+void	heredoc(char *limiter, t_shell *info, t_cmdlst *next);
 
 //wildcard
 int		check_wild_card(char ***cmd);
@@ -138,6 +134,7 @@ void	swap_str(char **s1, char **s2);
 void	ft_free_files_lst(t_files **lst);
 int		get_files_num(t_files *files);
 t_files	*get_last_files(t_files *files);
+void	ft_free_infile_outfile(t_shell *info);
 
 //cmdlst
 void	interpret_cmd(char *cmd, t_cmdlst **lst);
@@ -151,10 +148,7 @@ int		to_split(char *s);
 char	**interesting_split(char *cmd, int depth);
 int		cmdlst_is_double(char *s, char *bonus);
 
-
-//smart split for pipe
-char	**ft_smart_split(char *str, t_shell *info);
-char	**remove_space_quote(char **str, t_shell *info);
-char	*filter_dollar(char *str, t_shell *info);
+//execve
+char	*get_cmd_path(char *cmd);
 
 #endif

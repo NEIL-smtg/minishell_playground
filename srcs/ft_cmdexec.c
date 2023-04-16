@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 23:45:04 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/13 02:29:07 by suchua           ###   ########.fr       */
+/*   Updated: 2023/04/16 00:55:31 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,51 +19,30 @@ static int	is_bonus(char *s)
 	return (0);
 }
 
-static void	ft_exec(t_cmdlst *node, int fd[2], int prevfd, t_shell *info)
+static void	ft_exec(t_cmdlst *node, t_shell *info)
 {
 	char	**s_cmd;
-	char	*cmd_path;
-	t_cmdlst	*tmp;
-	char	*new;
 
 	s_cmd = ft_split(node->cmd, 32);
-	if (prevfd != -1)
-		dup2(prevfd, 0);
+	if (info->prevfd != -1)
+		dup2(info->prevfd, 0);
 	if (node->next && !ft_strncmp(node->next->cmd, "|", 2))
-		dup2(fd[1], 1);
-	close(fd[1]);
-	close(fd[0]);
-	cmd_path = get_cmd_path(s_cmd[0]);
-	tmp = node;
-	if (!cmd_path && tmp->prev && !(ft_strncmp("&&", tmp->prev->cmd, 3)))
-	{
-		if (!tmp->prev || !tmp->prev->prev)
-			exit(127);
-		tmp = tmp->prev->prev;
-		new = ft_strjoin(tmp->cmd, " -");
-		new = gnl_strjoin(new, node->cmd);
-		ft_free2d(s_cmd);
-		free(cmd_path);
-		free(node->cmd);
-		node->cmd = new;
-		s_cmd = ft_split(node->cmd, 32);
-		cmd_path = get_cmd_path(s_cmd[0]);
-	}
-	execve(cmd_path, s_cmd, info->ms_env);
+		dup2(info->fd[1], 1);
+	close(info->fd[1]);
+	close(info->fd[0]);
+	execve(get_cmd_path(s_cmd[0]), s_cmd, info->ms_env);
 	exit(127);
 }
 
 void	ft_cmdexec(t_shell *info)
 {
-	int			fd[2];
 	pid_t		id;
 	t_cmdlst	*tmp;
-	int			prevfd;
 	
 	tmp = info->cmdlst;
-	prevfd = -1;
 	while (tmp)
 	{
+		info->prevfd = -1;
 		while (tmp && !is_bonus(tmp->cmd))
 		{
 			if (!ft_strncmp(tmp->cmd, "|", 2))
@@ -71,24 +50,27 @@ void	ft_cmdexec(t_shell *info)
 				tmp = tmp->next;
 				continue ;
 			}
-			if (pipe(fd) == -1)
+			if (pipe(info->fd) == -1)
 				return ;
 			id = fork();
 			if (id == 0)
-				ft_exec(tmp, fd, prevfd, info);
-			close(fd[1]);
-			if (prevfd != -1)
-				close(prevfd);
-			prevfd = fd[0];
+				ft_exec(tmp, info);
+			close(info->fd[1]);
+			if (info->prevfd != -1)
+				close(info->prevfd);
+			info->prevfd = info->fd[0];
 			tmp = tmp->next;
 		}
-		close(prevfd);
+		close(info->prevfd);
 		while (waitpid(-1, &info->ms_status, 0) > 0)
 			continue ;
 		if (info->ms_status)
-			perror("Command not found");
+			perror("minishell");
 		if (!tmp || (!ft_strncmp(tmp->cmd, "&&", 3) && info->ms_status))
 			break ;
+		if (!info->ms_status && !ft_strncmp(tmp->cmd, "||", 3))
+			while (tmp->next && !is_bonus(tmp->next->cmd))
+				tmp = tmp->next;
 		tmp = tmp->next;
 	}
 	while (waitpid(-1, &info->ms_status, 0) > 0)

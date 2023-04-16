@@ -23,8 +23,6 @@ void	init(t_shell *info, char **env)
 	info->ms_prompt = ft_strjoin(user, ms);
 	info->ms_env = ft_2d_strdup(env);
 	info->ms_status = 0;
-	info->infile = -1;
-	info->outfile = -1;
 	info->cmdlst = NULL;
 }
 
@@ -44,7 +42,10 @@ void	get_input(t_shell *info)
 		}
 		add_history(info->input_line);
 		interpret_cmd(info->input_line, &info->cmdlst);
-		ft_cmdexec(info);
+		set_redir(info, &info->cmdlst);
+		printf("after : %s\n", info->cmdlst->cmd);
+		// ft_cmdexec(info);
+		ft_free_infile_outfile(info);
 		ft_free_cmdlst(&info->cmdlst);
 		// ft_handle_cmd(info);
 		free(info->input_line);
