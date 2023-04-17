@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/05 01:55:59 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/17 00:22:59 by suchua           ###   ########.fr       */
+/*   Updated: 2023/04/18 02:00:40 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,34 +93,18 @@ t_files	*get_last_files(t_files *files)
 void	ft_free_infile_outfile(t_shell *info)
 {
 	t_redirlst	*tmp;
-
-	tmp = info->infile;
-	printf("infile :: \n");
-	while (tmp)
-	{
-		printf("%d\n", tmp->fd);
-		tmp = tmp->next;
-	}
-	
-	tmp = info->outfile;
-	printf("outfile :: \n");
-	while (tmp)
-	{
-		printf("%d\n", tmp->fd);
-		tmp = tmp->next;
-	}
 	
 	while (info->infile)
 	{
 		tmp = info->infile->next;
-		close(info->infile->fd);
+		free(info->infile->filename);
 		free(info->infile);
 		info->infile = tmp;
 	}
 	while (info->outfile)
 	{
 		tmp = info->outfile->next;
-		close(info->outfile->fd);
+		free(info->outfile->filename);
 		free(info->outfile);
 		info->outfile = tmp;
 	}

@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 19:22:17 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/17 00:16:05 by suchua           ###   ########.fr       */
+/*   Updated: 2023/04/18 02:00:01 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ typedef	struct s_term_setting
 typedef struct s_redirlst
 {
 	int					fd;
+	char				*filename;
 	struct	s_redirlst	*next;
 }	t_redirlst;
 
@@ -111,9 +112,10 @@ void	init_signal(void);
 
 //redir
 int		set_redir(t_shell *info, t_cmdlst **node);
+void	ft_redir_exec(t_shell *info, t_cmdlst *node);
 
 //redirlst
-void	redirlst_addback(t_redirlst **rlst, int fd);
+void	redirlst_addback(t_redirlst **rlst, char *filename, int fd);
 
 //heredoc
 char	*get_limiter(char *cmd);

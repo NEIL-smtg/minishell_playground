@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/15 23:46:42 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/17 01:56:10 by suchua           ###   ########.fr       */
+/*   Updated: 2023/04/18 01:59:35 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,14 @@
 static void	build_redirlst(char *filename, t_shell *info, int type)
 {
 	if (type == L1)
-		redirlst_addback(&info->infile, open(filename, O_RDONLY));
+		redirlst_addback(&info->infile, filename,
+				open(filename, O_RDONLY));
 	else if (type == R2)
-		redirlst_addback(&info->outfile, open(filename,
-				O_RDWR | O_APPEND | O_CREAT, 0000644));
+		redirlst_addback(&info->outfile, filename,
+			open(filename, O_RDWR | O_APPEND | O_CREAT, 0000644));
 	else if (type == R1)
-		redirlst_addback(&info->outfile, open(filename,
-				O_RDWR | O_TRUNC | O_CREAT, 0000644));
+		redirlst_addback(&info->outfile, filename,
+			open(filename, O_RDWR | O_TRUNC | O_CREAT, 0000644));
 	free(filename);
 }
 
@@ -58,6 +59,7 @@ static int	redir_decider(t_shell *info, t_cmdlst **node)
 		return (0);
 	trim_cmd(node);
 	ft_redir_exec(info, *node);
+	ft_free_infile_outfile(info);
 	return (1);
 }
 

@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 01:28:31 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/17 00:15:38 by suchua           ###   ########.fr       */
+/*   Updated: 2023/04/17 15:48:11 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,8 @@ int	to_split(char *s)
 	if (!ft_strncmp(s, "||", 3))
 		return (1);
 	if (!ft_strncmp(s, "&&", 3))
+		return (1);
+	if (!ft_strncmp(s, ";", 2))
 		return (1);
 	return (0);
 }

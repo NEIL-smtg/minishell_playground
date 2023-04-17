@@ -6,16 +6,11 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 01:35:34 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/17 02:17:01 by suchua           ###   ########.fr       */
+/*   Updated: 2023/04/18 03:29:34 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-static char	**get_cat(char *cat)
-{
-	return (ft_split(cat, 32));
-}
 
 static void	combine_infile(t_shell *info)
 {
@@ -32,70 +27,102 @@ static void	combine_infile(t_shell *info)
 			dup2(info->fd[1], 1);
 			close(info->fd[1]);
 			close(info->fd[0]);
-			execve(get_cmd_path("cat"), get_cat("cat"), info->ms_env);
+			close(tmpin->fd);
+			execve(get_cmd_path("cat"), ft_split("cat ", 32), info->ms_env);
 			exit(127);
 		}
 		tmpin = tmpin->next;
 	}
+	close(info->fd[1]);
+	info->prevfd = info->fd[0];
 	while (waitpid(-1, &info->ms_status, 0) > 0)
 		continue ;
 }
 
-static void	to_outfile(t_shell *info, char *cmd)
+void	redirect_output(int piping, t_shell *info, char *cmd)
 {
 	t_redirlst	*tmpout;
 	char		**s_cmd;
-	int			flag;
-	
-	flag = 0;
-	s_cmd = ft_split(cmd, 32);
-	if (!s_cmd[0][0])
-	{
-		flag = 1;
-		free(s_cmd[0]);
-		s_cmd[0] = ft_strdup("cat");
-	}
+
 	tmpout = info->outfile;
 	while (tmpout)
 	{
-		if (info->prevfd != -1)
-			dup2(info->prevfd, 0);
-		dup2(tmpout->fd, 1);
-		close(info->fd[0]);
-		close(info->fd[1]);
 		if (fork() == 0)
 		{
-			if (flag)
-				execve(get_cmd_path("cat"), s_cmd, info->ms_env);
-			else
-				execve(get_cmd_path(s_cmd[0]), s_cmd, info->ms_env);
+			s_cmd = ft_split(cmd, 32);
+			if (info->prevfd != -1)
+				dup2(info->prevfd, 0);
+			dup2(tmpout->fd, 1);
+			close(tmpout->fd);
+			execve(get_cmd_path(s_cmd[0]), s_cmd, info->ms_env);
+			exit(127);
 		}
+		close(tmpout->fd);
+		if (!tmpout->next && piping)
+			break ;
 		tmpout = tmpout->next;
 	}
+	close(info->prevfd);
+	info->prevfd = -1;
+	if (tmpout && !tmpout->next && piping)
+		info->prevfd = open(info->outfile->filename, O_RDONLY);
+	while (waitpid(-1, &info->ms_status, 0) > 0)
+		continue ;
+}
+
+void	shell_output(int piping, t_shell *info, char *cmd)
+{
+	char	**s_cmd;
+	pid_t	id;
+
+	if (piping && pipe(info->fd) == -1)
+		return ;
+	id = fork();
+	if (id == -1)
+		return ;
+	if (id == 0)
+	{
+		s_cmd = ft_split(cmd, 32);
+		if (piping)
+		{
+			dup2(info->fd[1], 1);
+			close(info->fd[0]);
+			close(info->fd[1]);
+		}
+		if (info->prevfd != -1)
+			dup2(info->prevfd, 0);
+		execve(get_cmd_path(s_cmd[0]), s_cmd, info->ms_env);
+		exit(127);
+	}
+	close(info->fd[1]);
+	if (piping)
+		info->prevfd = info->fd[0];
 	while (waitpid(-1, &info->ms_status, 0) > 0)
 		continue ;
 }
 
 void	ft_redir_exec(t_shell *info, t_cmdlst *node)
 {
-	if (pipe(info->fd) == -1)
-	{
-		perror("minishell : pipe");
-		return ;
-	}
+	int		piping;
+	size_t	i;
+
 	if (info->infile)
 	{
+		info->prevfd = -1;
 		combine_infile(info);
-		info->prevfd = info->fd[0];
 	}
-	if (pipe(info->fd) == -1)
-	{
-		perror("minishell : pipe");
-		return ;
-	}
-	if (info->outfile)
-	{
-		to_outfile(info, node->cmd);
-		info->prevfd = info->fd[0];
-	}
+	piping = 0;
+	if (node->next && !ft_strncmp(node->next->cmd, "|", 2))
+		piping = 1;
+	i = 0;
+	while (node->cmd[i] && ft_isspace(node->cmd[i]))
+		++i;
+	if (i == ft_strlen(node->cmd) && info->outfile)
+		redirect_output(piping, info, "cat ");
+	else if (i != ft_strlen(node->cmd) && info->outfile)
+		redirect_output(piping, info, node->cmd);
+	else if (i == ft_strlen(node->cmd))
+		shell_output(piping, info, "cat ");
+	else if (i != ft_strlen(node->cmd))
+		shell_output(piping, info, node->cmd);
 }
