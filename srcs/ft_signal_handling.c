@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 22:32:22 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/17 15:44:34 by suchua           ###   ########.fr       */
+/*   Updated: 2023/04/18 16:18:28 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	signal_handler(int sig)
 {
 	(void) sig;
 	ft_putendl_fd("", 1);
-	rl_replace_line("", 0);
+	// rl_replace_line("", 0);
 	rl_on_new_line();
 	rl_redisplay();
 }

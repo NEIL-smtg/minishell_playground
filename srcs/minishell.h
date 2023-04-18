@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 19:22:17 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/18 02:00:01 by suchua           ###   ########.fr       */
+/*   Updated: 2023/04/18 17:54:38 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,6 @@ typedef	struct s_term_setting
 {
 	struct termios	original_setting;
 }	t_term;
-
 
 //to store fd of redirections
 typedef struct s_redirlst
@@ -109,6 +108,9 @@ int		dangling_pipe(char *str);
 
 //signal
 void	init_signal(void);
+
+//parse input
+void	ft_parse_input(t_shell *info);
 
 //redir
 int		set_redir(t_shell *info, t_cmdlst **node);

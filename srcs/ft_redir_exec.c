@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 01:35:34 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/18 03:29:34 by suchua           ###   ########.fr       */
+/*   Updated: 2023/04/18 16:24:04 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,15 +57,17 @@ void	redirect_output(int piping, t_shell *info, char *cmd)
 			execve(get_cmd_path(s_cmd[0]), s_cmd, info->ms_env);
 			exit(127);
 		}
-		close(tmpout->fd);
+		close(info->prevfd);
+		info->prevfd = open(tmpout->filename, O_RDONLY);
 		if (!tmpout->next && piping)
 			break ;
 		tmpout = tmpout->next;
 	}
-	close(info->prevfd);
-	info->prevfd = -1;
-	if (tmpout && !tmpout->next && piping)
-		info->prevfd = open(info->outfile->filename, O_RDONLY);
+	if (!piping)
+	{
+		close(info->prevfd);
+		info->prevfd = -1;
+	}
 	while (waitpid(-1, &info->ms_status, 0) > 0)
 		continue ;
 }

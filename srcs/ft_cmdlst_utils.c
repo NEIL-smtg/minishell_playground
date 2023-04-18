@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 01:28:31 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/17 15:48:11 by suchua           ###   ########.fr       */
+/*   Updated: 2023/04/18 19:06:25 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,8 +99,7 @@ char	**interesting_split(char *cmd, int depth)
 	return (dst);
 }
 
-//if bonus == '||' , returns 1 when s == double
-//if bonus == '&&' , ^
+//if bonus == '||' | '&&' , returns 1 when s == double
 int	cmdlst_is_double(char *s, char *bonus)
 {
 	return (ft_strncmp(s, bonus, ft_strlen(bonus)) == 0);
