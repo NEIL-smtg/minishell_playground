@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 01:28:31 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/18 19:06:25 by suchua           ###   ########.fr       */
+/*   Updated: 2023/04/19 01:40:20 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,31 +72,32 @@ int	to_split(char *s)
 	return (0);
 }
 
-char	**interesting_split(char *cmd, int depth)
+//sq = single quote, dq = double quote
+char	**interesting_split(char *cmd, int depth, int sq, int dq)
 {
-	char	*str;
-	char	**dst;
+	char	**res;
 	int		i;
-	int		is_quoted;
-
-	is_quoted = 0;
-	while (*cmd == 32)
+	char	*sub;
+	
+	while (ft_isspace(*cmd))
 		cmd++;
-	if (*cmd == 34 || *cmd == 39)
-		is_quoted = *cmd++;
-	i = 0;
-	while (cmd[i] && (cmd[i] != 32 || is_quoted))
-		if (cmd[i++] == is_quoted)
+	i = -1;
+	while (cmd[++i])
+	{
+		if (cmd[i] == 34)
+			sq = !sq;
+		if (cmd[i] == 39)
+			dq = !dq;
+		if (ft_isspace(cmd[i]) && !sq && !dq)
 			break ;
-	str = ft_substr(cmd, 0, i - !(!is_quoted));
-	while (cmd[i] && cmd[i] == 32)
-		++i;
+	}
+	sub = ft_substr(cmd, 0, (size_t) i);
 	if (!cmd[i])
-		dst = ft_calloc(depth + 2, sizeof(char *));
+		res = ft_calloc(depth + 2, sizeof(char *));
 	else
-		dst = interesting_split(cmd + i, depth + 1);
-	dst[depth] = str;
-	return (dst);
+		res = interesting_split(cmd + i, depth + 1, 0, 0);
+	res[depth] = sub;
+	return (res);
 }
 
 //if bonus == '||' | '&&' , returns 1 when s == double

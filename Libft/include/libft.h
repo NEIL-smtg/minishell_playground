@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 14:01:42 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/06 19:49:36 by suchua           ###   ########.fr       */
+/*   Updated: 2023/04/19 01:01:58 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,5 +88,6 @@ char	**ft_2d_strdup(char **src);
 char	**ft_2d_strndup(char **src, int n);
 void	ft_free2d(char **str);
 int		get_2d_arr_size(char **s);
+int		ft_upperalpha(int c);
 
 #endif

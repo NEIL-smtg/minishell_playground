@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 01:17:32 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/18 19:08:07 by suchua           ###   ########.fr       */
+/*   Updated: 2023/04/19 01:41:08 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void	interpret_cmd(char *cmd, t_cmdlst **lst)
 	int			i;
 
 	s = NULL;
-	split = interesting_split(cmd, 0);
+	split = interesting_split(cmd, 0, 0, 0);
 	i = 0;
 	while (split[i])
 	{

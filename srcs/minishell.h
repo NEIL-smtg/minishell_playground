@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 19:22:17 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/18 17:54:38 by suchua           ###   ########.fr       */
+/*   Updated: 2023/04/19 01:40:54 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # include <termios.h>
 # include <errno.h>
 # include <signal.h>
+# include <string.h>
 
 # define R1 1
 # define R2 2
@@ -149,7 +150,7 @@ void	ft_free_cmdlst(t_cmdlst **lst);
 void	print_lst(t_cmdlst *lst);
 void	ft_cmdlst_addback(t_cmdlst	**lst, char *s);
 int		to_split(char *s);
-char	**interesting_split(char *cmd, int depth);
+char	**interesting_split(char *cmd, int depth, int sq, int dq);
 int		cmdlst_is_double(char *s, char *bonus);
 
 //execve

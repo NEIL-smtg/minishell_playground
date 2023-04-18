@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/18 16:29:44 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/18 20:19:17 by suchua           ###   ########.fr       */
+/*   Updated: 2023/04/19 01:06:02 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,25 +34,26 @@ static char	*search_result(t_shell *info, char *needle)
 }
 
 //i = input index, j = new index
-static void	overwrite_with_env_value(int *i, char **new, int *j, t_shell *info)
+static void	overwrite_with_env_value(char **new, t_shell *info, int *i, int *j)
 {
 	char	*res;
 	int		k;
 	char	*needle;
 	char	*tmp;
 
-	k = 1;
-	while (info->input_line[k] && !ft_isspace(info->input_line[k]))
+	k = *i + 1;
+	while (info->input_line[k] && ft_isalpha(info->input_line[k]))
 		++k;
-	needle = ft_substr(info->input_line, *i + 1, k - 1);
+	needle = ft_substr(info->input_line, *i + 1, k - *i - 1);
 	res = search_result(info, needle);
 	if (!res)
 		res = ft_substr(info->input_line, *i, k);
 	tmp = ft_strjoin(*new, res);
-	tmp = gnl_strjoin(tmp, ft_strdup(&info->input_line[k]));
+	tmp = gnl_strjoin(tmp, &info->input_line[k]);
 	*j += ft_strlen(res);
 	*i += ft_strlen(needle);
 	ft_memset(&tmp[*j], 0, ft_strlen(&tmp[*j]));
+	free(res);
 	free(*new);
 	free(needle);
 	*new = tmp;
@@ -77,7 +78,7 @@ static void	generate_new_input(t_shell *info)
 		else if (quote == info->input_line[i])
 			quote = -1;
 		else if ((quote == -1 || quote == 34) && info->input_line[i] == '$')
-			overwrite_with_env_value(&i, &new, &j, info);
+			overwrite_with_env_value(&new, info, &i, &j);
 		else
 			new[j++] = info->input_line[i];
 	}
@@ -99,7 +100,7 @@ void	no_quote_parsing(t_shell *info)
 	while (info->input_line[++i])
 	{
 		if (info->input_line[i] == '$')
-			overwrite_with_env_value(&i, &new, &j, info);
+			overwrite_with_env_value(&new, info, &i, &j);
 		else
 			new[j++] = info->input_line[i];
 	}
