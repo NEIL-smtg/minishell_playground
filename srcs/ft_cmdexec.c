@@ -22,8 +22,10 @@ static int	is_bonus(char *s)
 static void	ft_exec(t_cmdlst *node, t_shell *info)
 {
 	char	**s_cmd;
+	char	*path;
 
 	s_cmd = ft_split(node->cmd, 32);
+	path = get_cmd_path(s_cmd[0]);
 	if (info->prevfd != -1 && node->prev && ft_strncmp(node->prev->cmd, ";", 2))
 		dup2(info->prevfd, 0);
 	if (node->next && !ft_strncmp(node->next->cmd, "|", 2))
@@ -31,7 +33,8 @@ static void	ft_exec(t_cmdlst *node, t_shell *info)
 	close(info->fd[1]);
 	close(info->fd[0]);
 	if (!is_builtin(s_cmd, info))
-		execve(get_cmd_path(s_cmd[0]), s_cmd, info->ms_env);
+		execve(path, s_cmd, info->ms_env);
+	free(path);
 	exit(127);
 }
 
@@ -71,7 +74,7 @@ void	ft_cmdexec(t_shell *info)
 		if (!tmp || (!ft_strncmp(tmp->cmd, "&&", 3) && info->ms_status))
 			break ;
 		if (!info->ms_status && !ft_strncmp(tmp->cmd, "||", 3))
-			while (tmp->next && !is_bonus(tmp->next->cmd))
+			while (tmp->next && (tmp->next->within_brac || !is_bonus(tmp->next->cmd)))
 				tmp = tmp->next;
 		tmp = tmp->next;
 	}
