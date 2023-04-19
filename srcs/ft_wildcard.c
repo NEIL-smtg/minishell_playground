@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 02:07:08 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/19 18:36:39 by suchua           ###   ########.fr       */
+/*   Updated: 2023/04/19 18:52:23 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	store_files(char *target, t_files **files)
 	return (1);
 }
 
-void	overwrite_cmd(t_cmdlst **node, t_files *files, int *i)
+void	overwrite_cmd(t_cmdlst **node, t_files *files, int *i, int j)
 {
 	char	*front;
 	char	*back;
@@ -43,7 +43,9 @@ void	overwrite_cmd(t_cmdlst **node, t_files *files, int *i)
 		return ;
 	middle = NULL;
 	front = ft_substr((*node)->cmd, 0, (size_t)(*i));
-	back = ft_substr((*node)->cmd, *i + 1, ft_strlen((*node)->cmd) - *i - 1);
+	while ((*node)->cmd[j] && !ft_isspace((*node)->cmd[j]))
+		++j;
+	back = ft_substr((*node)->cmd, j, ft_strlen((*node)->cmd) - j - 1);
 	while (files)
 	{
 		middle = gnl_strjoin(middle, files->file);
@@ -73,7 +75,7 @@ int	manage_wildcard(t_cmdlst **node)
 			if (!is_curr_dir((*node)->cmd, i)
 				|| !store_files(get_target((*node)->cmd, i + 1), &files))
 				return (0);
-			overwrite_cmd(node, files, &i);
+			overwrite_cmd(node, files, &i, i);
 			ft_free_files_lst(&files);
 		}
 	}
