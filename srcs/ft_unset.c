@@ -18,12 +18,12 @@ void	reconstruct_env(t_shell *info, int deleted)
 	int		i;
 	int		j;
 
-	new_env = ft_calloc(get_2d_arr_size(info->ms_env) - 1, sizeof(char *));
+	new_env = ft_calloc(get_2d_arr_size(info->ms_env), sizeof(char *));
 	i = -1;
 	j = 0;
 	while (info->ms_env[++i])
 		if (i != deleted)
-			new_env[j++] = info->ms_env[i];
+			new_env[j++] = ft_strdup(info->ms_env[i]);
 	ft_free2d(info->ms_env);
 	info->ms_env = new_env;
 }

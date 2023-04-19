@@ -38,6 +38,7 @@ void	add_or_replace(char *target, char *new, t_shell *info)
 {
 	int		i;
 	char	**new_env;
+	int		len;
 
 	i = -1;
 	while (info->ms_env[++i])
@@ -51,9 +52,10 @@ void	add_or_replace(char *target, char *new, t_shell *info)
 		}
 	}
 	free(target);
-	new_env = ft_calloc(get_2d_arr_size(info->ms_env) + 1, sizeof(char *));
+	len = get_2d_arr_size(info->ms_env);
+	new_env = ft_calloc(len + 2, sizeof(char *));
 	i = -1;
-	while (new_env[++i])
+	while (++i < len)
 		new_env[i] = ft_strdup(info->ms_env[i]);
 	new_env[i] = ft_strdup(new);
 	ft_free2d(info->ms_env);

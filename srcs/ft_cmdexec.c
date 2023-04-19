@@ -49,7 +49,7 @@ void	ft_cmdexec(t_shell *info)
 			if (pipe(info->fd) == -1)
 				return ;
 			if (!ft_strncmp(tmp->cmd, "|", 2) || !ft_strncmp(tmp->cmd, ";", 2)
-					|| set_redir(info, &tmp))
+					|| set_redir(info, &tmp) || parent_exec(info, tmp))
 			{
 				tmp = tmp->next;
 				continue ;

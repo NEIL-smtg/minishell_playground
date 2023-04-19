@@ -157,6 +157,7 @@ char	*get_cmd_path(char *cmd);
 
 //builtins
 int		is_builtin(char **s_cmd, t_shell *info);
+int		parent_exec(t_shell *info, t_cmdlst *node);
 void	ft_echo(char **s_cmd, t_shell *info);
 void	ft_env(char **s_cmd, t_shell *info);
 void	ft_export(char **s_cmd, t_shell *info);
