@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 01:35:34 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/18 16:24:04 by suchua           ###   ########.fr       */
+/*   Updated: 2023/04/19 19:01:26 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,13 +43,18 @@ void	redirect_output(int piping, t_shell *info, char *cmd)
 {
 	t_redirlst	*tmpout;
 	char		**s_cmd;
+	int			flag;
 
 	tmpout = info->outfile;
+	flag = 0;
 	while (tmpout)
 	{
 		if (fork() == 0)
 		{
-			s_cmd = ft_split(cmd, 32);
+			if (!flag)
+				s_cmd = ft_split(cmd, 32);
+			else
+				s_cmd = ft_split("cat ", 32);
 			if (info->prevfd != -1)
 				dup2(info->prevfd, 0);
 			dup2(tmpout->fd, 1);
@@ -57,6 +62,7 @@ void	redirect_output(int piping, t_shell *info, char *cmd)
 			execve(get_cmd_path(s_cmd[0]), s_cmd, info->ms_env);
 			exit(127);
 		}
+		flag = 1;
 		close(info->prevfd);
 		info->prevfd = open(tmpout->filename, O_RDONLY);
 		if (!tmpout->next && piping)

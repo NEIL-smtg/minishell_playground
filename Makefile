@@ -1,10 +1,10 @@
 NAME		=	minishell
-MAN_FILES	=	main ft_signal_handling utils utils2 \
+MAN_FILES	=	main ft_signal_handling utils utils2 ft_parse_input\
 				ft_wildcard ft_wildcard_utils \
 				ft_dangling ft_dangling_pipe \
 				ft_cmdlst ft_cmdlst_utils ft_cmdexec \
 				ft_cmdredir ft_heredoc ft_redirlst ft_redir_exec \
-				ft_parse_input
+				ft_builtin ft_cd ft_echo ft_env ft_export ft_pwd ft_unset
 SRC_DIR		=	srcs/
 OBJS_DIR	=	objs/
 LIBFT_DIR	=	Libft/

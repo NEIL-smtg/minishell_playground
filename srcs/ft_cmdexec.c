@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 23:45:04 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/19 18:54:14 by suchua           ###   ########.fr       */
+/*   Updated: 2023/04/19 22:08:27 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,8 @@ static void	ft_exec(t_cmdlst *node, t_shell *info)
 		dup2(info->fd[1], 1);
 	close(info->fd[1]);
 	close(info->fd[0]);
-	execve(get_cmd_path(s_cmd[0]), s_cmd, info->ms_env);
+	if (!is_builtin(s_cmd, info))
+		execve(get_cmd_path(s_cmd[0]), s_cmd, info->ms_env);
 	exit(127);
 }
 
