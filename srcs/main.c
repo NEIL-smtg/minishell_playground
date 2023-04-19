@@ -47,8 +47,8 @@ void	get_input(t_shell *info)
 		add_history(info->input_line);
 		ft_parse_input(info);
 		interpret_cmd(info->input_line, &info->cmdlst);
-		print_lst(info->cmdlst);
-		// ft_cmdexec(info);
+		ft_parse_wildcard(info);
+		ft_cmdexec(info);
 		ft_free_cmdlst(&info->cmdlst);
 		free(info->input_line);
 	}

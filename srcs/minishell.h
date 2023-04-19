@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 19:22:17 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/19 01:40:54 by suchua           ###   ########.fr       */
+/*   Updated: 2023/04/19 18:37:56 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,6 +112,7 @@ void	init_signal(void);
 
 //parse input
 void	ft_parse_input(t_shell *info);
+void	ft_parse_wildcard(t_shell *info);
 
 //redir
 int		set_redir(t_shell *info, t_cmdlst **node);
@@ -125,12 +126,10 @@ char	*get_limiter(char *cmd);
 void	heredoc(char *limiter, t_shell *info, t_cmdlst *next);
 
 //wildcard
-int		check_wild_card(char ***cmd);
-char	*write_files_to_str(char *cmd, t_files **files);
-int		wild_card_exists(char *cmd);
-void	get_the_files(t_files **lst, char *type);
-int		is_file_type(char *file, char *type);
-char	*wildcard_error(char *str, t_files **files);
+int		is_curr_dir(char *cmd, int i);
+char	*get_target(char *cmd, int i);
+int		target_found(char *file, char *target);
+void	files_addback(t_files **files, char *file);
 
 //utils
 void	msg_cmd_not_found(char **cmd);

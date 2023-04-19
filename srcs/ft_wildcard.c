@@ -5,78 +5,90 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/17 00:31:51 by suchua            #+#    #+#             */
-/*   Updated: 2023/03/20 20:24:26 by suchua           ###   ########.fr       */
+/*   Created: 2023/04/19 02:07:08 by suchua            #+#    #+#             */
+/*   Updated: 2023/04/19 18:36:39 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*get_file_type(char *cmd, int i)
+int	store_files(char *target, t_files **files)
 {
-	int		j;
-	char	c;
-	char	*type;
+	struct dirent	*entry;
+	DIR				*dir;
 
-	j = i + 1;
-	while (cmd[j] && cmd[j] != 32)
-		++j;
-	c = cmd[j];
-	cmd[j] = 0;
-	type = ft_strdup(&cmd[i + 1]);
-	cmd[j] = c;
-	return (type);
+	dir = opendir(".");
+	if (!dir)
+		return (0);
+	entry = readdir(dir);
+	while (entry != NULL)
+	{
+		if (target_found(entry->d_name, target))
+			files_addback(files, entry->d_name);
+		entry = readdir(dir);
+	}
+	free(dir);
+	if (target)
+		free(target);
+	return (1);
 }
 
-char	*redup_cmd(char *cmd)
+void	overwrite_cmd(t_cmdlst **node, t_files *files, int *i)
 {
-	int			i;
-	char		*type;
-	t_files		*files;
-	t_files_num	files_num;
+	char	*front;
+	char	*back;
+	char	*middle;
+
+	if (!files)
+		return ;
+	middle = NULL;
+	front = ft_substr((*node)->cmd, 0, (size_t)(*i));
+	back = ft_substr((*node)->cmd, *i + 1, ft_strlen((*node)->cmd) - *i - 1);
+	while (files)
+	{
+		middle = gnl_strjoin(middle, files->file);
+		middle = gnl_strjoin(middle, " ");
+		files = files->next;
+	}
+	front = gnl_strjoin(front, middle);
+	front = gnl_strjoin(front, back);
+	free(back);
+	free((*node)->cmd);
+	(*node)->cmd = front;
+	*i += (int) ft_strlen(middle) - 1;
+	free(middle);
+}
+
+int	manage_wildcard(t_cmdlst **node)
+{
+	int		i;
+	t_files	*files;
 
 	i = -1;
 	files = NULL;
-	while (cmd[++i])
+	while ((*node)->cmd[++i])
 	{
-		if (cmd[i] == '*')
+		if ((*node)->cmd[i] == '*')
 		{
-			files_num.before = get_files_num(files);
-			if (cmd[i + 1] == 32 || !cmd[i + 1])
-				type = NULL;
-			else
-				type = get_file_type(cmd, i);
-			get_the_files(&files, type);
-			files_num.after = get_files_num(files);
-			if (cmd[i] == '*' && files_num.after == files_num.before)
-				return (wildcard_error(&cmd[i], &files));
+			if (!is_curr_dir((*node)->cmd, i)
+				|| !store_files(get_target((*node)->cmd, i + 1), &files))
+				return (0);
+			overwrite_cmd(node, files, &i);
+			ft_free_files_lst(&files);
 		}
 	}
-	return (write_files_to_str(cmd, &files));
+	return (1);
 }
 
-int	check_wild_card(char ***cmd)
+void	ft_parse_wildcard(t_shell *info)
 {
-	int		i;
-	int		ret;
-	char	**tmp;
-	char	*tmp2;
+	t_cmdlst	*node;
 
-	i = -1;
-	tmp = *cmd;
-	while (tmp[++i])
+	node = info->cmdlst;
+	while (node)
 	{
-		ret = wild_card_exists(tmp[i]);
-		if (ret == -1)
-			return (-1);
-		if (ret == 0)
-			continue ;
-		tmp2 = redup_cmd(tmp[i]);
-		if (!tmp2)
-			return (-1);
-		free(tmp[i]);
-		tmp[i] = ft_strdup(tmp2);
-		free(tmp2);
+		if (ft_strchr(node->cmd, '*') && !manage_wildcard(&node))
+			return ;
+		node = node->next;
 	}
-	return (1);
 }
