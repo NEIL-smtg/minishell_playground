@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 19:22:17 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/19 23:15:59 by suchua           ###   ########.fr       */
+/*   Updated: 2023/04/20 18:38:45 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,9 +156,9 @@ int		cmdlst_is_double(char *s, char *bonus);
 char	*get_cmd_path(char *cmd);
 
 //builtins
-int		is_builtin(char **s_cmd, t_shell *info);
+int		is_builtin(char **s_cmd, t_shell *info, char *ori_cmd);
 int		parent_exec(t_shell *info, t_cmdlst *node);
-void	ft_echo(char **s_cmd, t_shell *info);
+void	ft_echo(char **split, char *cmd, t_shell *info);
 void	ft_env(char **s_cmd, t_shell *info);
 void	ft_export(char **s_cmd, t_shell *info);
 void	ft_pwd(char **s_cmd, t_shell *info);

@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 22:03:14 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/19 23:18:43 by suchua           ###   ########.fr       */
+/*   Updated: 2023/04/20 18:38:55 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,10 @@ int	parent_exec(t_shell *info, t_cmdlst *node)
 	return (flag);
 }
 
-int	is_builtin(char **s_cmd, t_shell *info)
+int	is_builtin(char **s_cmd, t_shell *info, char *ori_cmd)
 {
 	if (!ft_strncmp("echo", s_cmd[0], 5))
-		ft_echo(s_cmd, info);
+		ft_echo(s_cmd, ori_cmd, info);
 	else if (!ft_strncmp("pwd", s_cmd[0], 4))
 		ft_pwd(s_cmd, info);
 	else if (!ft_strncmp("cd", s_cmd[0], 3))
