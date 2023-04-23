@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 01:28:31 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/22 04:03:34 by suchua           ###   ########.fr       */
+/*   Updated: 2023/04/24 02:37:10 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,23 +72,42 @@ int	to_split(char *s)
 	return (0);
 }
 
+int	instr_split(char *s)
+{
+	if (!ft_strncmp(s, "|", 1))
+		return (1);
+	if (!ft_strncmp(s, "||", 2))
+		return (1);
+	if (!ft_strncmp(s, "&&", 2))
+		return (1);
+	if (!ft_strncmp(s, ";", 1))
+		return (1);
+	return (0);
+}
+
 //sq = single quote, dq = double quote
 char	**interesting_split(char *cmd, int depth, int sq, int dq)
 {
 	char	**res;
 	int		i;
 	char	*sub;
+	int		echo;
 	
 	while (ft_isspace(*cmd))
 		cmd++;
 	i = -1;
+	echo = 0;
 	while (cmd[++i])
 	{
+		if (!ft_strncmp("echo", &cmd[i], 4))
+			echo = 1;
 		if (cmd[i] == 34)
 			sq = !sq;
 		if (cmd[i] == 39)
 			dq = !dq;
-		if (ft_isspace(cmd[i]) && !sq && !dq)
+		if (!sq && !dq && !echo && instr_split(&cmd[i]))
+			echo = 0;
+		if (ft_isspace(cmd[i]) && !sq && !dq && !echo)
 			break ;
 	}
 	sub = ft_substr(cmd, 0, (size_t) i);

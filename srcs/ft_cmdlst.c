@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 01:17:32 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/22 04:11:52 by suchua           ###   ########.fr       */
+/*   Updated: 2023/04/24 02:24:45 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,4 @@ void	interpret_cmd(char *cmd, t_cmdlst **lst)
 	fill_cmd_info(lst);
 	ft_free2d(split);
 	free(s);
-	// print_lst(*lst);
-	// ft_free_cmdlst(lst);
 }
