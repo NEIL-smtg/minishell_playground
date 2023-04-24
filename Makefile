@@ -1,10 +1,13 @@
 NAME		=	minishell
-MAN_FILES	=	main ft_signal_handling utils utils2 ft_parse_input\
-				ft_wildcard ft_wildcard_utils \
-				ft_dangling ft_dangling_pipe \
-				ft_cmdlst ft_cmdlst_utils ft_cmdexec \
-				ft_cmdredir ft_heredoc ft_redirlst ft_redir_exec \
-				ft_builtin ft_cd ft_echo ft_env ft_export ft_pwd ft_unset
+MAN_FILES	=	main signal/ft_signal_handling utils/utils utils/free \
+				parsing/ft_parse_input parsing/ft_dangling parsing/ft_dangling_pipe \
+				wildcard/ft_wildcard wildcard/ft_wildcard_utils \
+				cmdlst/ft_cmdlst cmdlst/ft_cmdlst_utils exec/ft_exec cmdlst/ft_ms_split\
+				redirections/ft_redirections redirections/ft_heredoc \
+				redirections/ft_redirlst redirections/ft_redir_exec \
+				redirections/ft_shell_output \
+				builtins/ft_builtin builtins/ft_cd builtins/ft_echo \
+				builtins/ft_env builtins/ft_export builtins/ft_pwd builtins/ft_unset
 SRC_DIR		=	srcs/
 OBJS_DIR	=	objs/
 LIBFT_DIR	=	Libft/
@@ -14,6 +17,7 @@ OBJS		=	$(addprefix $(OBJS_DIR), $(addsuffix .o, $(MAN_FILES)))
 GCC			=	gcc
 CFLAGS		=	-Wall -Werror -Wextra
 INC			=	-I/usr/local/opt/readline/include/
+INC			+=	-I include/
 RL			=	-L/usr/local/opt/readline/lib/
 RL			+=	-lreadline
 RM			=	rm -rf
@@ -52,8 +56,7 @@ re:
 	@make all
 
 norm:
-	@norminette -R CheckForbiddenSourceHeader $(SRCS)
-	@make norm $(LIBFT_DIR)
+	@norminette -R CheckForbiddenSourceHeader $(SRCS) include/
 
 redebug:
 	$(RM) debug

@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 19:22:17 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/20 18:38:45 by suchua           ###   ########.fr       */
+/*   Updated: 2023/04/25 00:05:27 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,11 +38,10 @@
 # define PIPE        3
 # define NORMAL      4
 
-
 //store the original setting of default terminal
 //reset terminal back to default setting before exiting the program
 //not sure if it matters
-typedef	struct s_term_setting
+typedef struct s_term_setting
 {
 	struct termios	original_setting;
 }	t_term;
@@ -52,7 +51,7 @@ typedef struct s_redirlst
 {
 	int					fd;
 	char				*filename;
-	struct	s_redirlst	*next;
+	struct s_redirlst	*next;
 }	t_redirlst;
 
 //to store the files in wildcard
@@ -104,7 +103,7 @@ typedef struct s_shell
 int		ft_dangling(char *str, int print);
 int		dangling_dquote(char *str);
 int		dangling_squote(char *str);
-int		dangling_bracket(char *str);
+int		dangling_bracket(char *str, int dq, int sq, int echo);
 int		dangling_pipe(char *str);
 
 //signal
@@ -117,6 +116,7 @@ void	ft_parse_wildcard(t_shell *info);
 //redir
 int		set_redir(t_shell *info, t_cmdlst **node);
 void	ft_redir_exec(t_shell *info, t_cmdlst *node);
+void	shell_output(int piping, t_shell *info, char *cmd);
 
 //redirlst
 void	redirlst_addback(t_redirlst **rlst, char *filename, int fd);
@@ -149,8 +149,9 @@ void	ft_free_cmdlst(t_cmdlst **lst);
 void	print_lst(t_cmdlst *lst);
 void	ft_cmdlst_addback(t_cmdlst	**lst, char *s);
 int		to_split(char *s);
-char	**interesting_split(char *cmd, int depth, int sq, int dq);
+char	**interesting_split(char *cmd, int depth);
 int		cmdlst_is_double(char *s, char *bonus);
+int		instr_split(char *s);
 
 //execve
 char	*get_cmd_path(char *cmd);

@@ -6,22 +6,30 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 01:17:32 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/24 02:24:45 by suchua           ###   ########.fr       */
+/*   Updated: 2023/04/24 22:47:30 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	remove_brac(t_cmdlst **node)
+void	remove_brac(t_cmdlst **node, int dq, int sq, int echo)
 {
 	t_cmdlst	*tmp;
 	int			i;
-	
+
 	tmp = *node;
 	i = -1;
 	while (tmp->cmd[++i])
-		if (tmp->cmd[i] == ')' || tmp->cmd[i] == '(')
+	{
+		if (!ft_strncmp("echo", &tmp->cmd[i], 4))
+			echo = 1;
+		if (tmp->cmd[i] == 34)
+			dq = !dq;
+		if (tmp->cmd[i] == 39)
+			sq = !sq;
+		if (!echo && !dq && !sq && (tmp->cmd[i] == ')' || tmp->cmd[i] == '('))
 			tmp->cmd[i] = 32;
+	}
 }
 
 void	fill_cmd_info(t_cmdlst **lst)
@@ -33,9 +41,6 @@ void	fill_cmd_info(t_cmdlst **lst)
 	prev = NULL;
 	while (tmp)
 	{
-		tmp->within_brac = 0;
-		tmp->open_brac = 0;
-		tmp->closed_brac = 0;
 		if (ft_strchr(tmp->cmd, '('))
 		{
 			tmp->open_brac = 1;
@@ -48,22 +53,18 @@ void	fill_cmd_info(t_cmdlst **lst)
 		}
 		if (prev && prev->within_brac && !prev->closed_brac)
 			tmp->within_brac = 1;
-		remove_brac(&tmp);
+		remove_brac(&tmp, 0, 0, 0);
 		prev = tmp;
 		tmp = tmp->next;
 	}
 }
 
-//	char	cmd[100] = "(echo 'msg1' || cmd2) && cmd3 | cmd4";
-//	char	cmd[100] = "(echo 'ms |   |   |  g1' | cmd2) && (cmd3 || cmd4) || (cmd5 && cmd6)";
-void	interpret_cmd(char *cmd, t_cmdlst **lst)
+static void	fill_cmdlst(char **split, t_cmdlst **lst)
 {
-	char		*s;
-	char		**split;
-	int			i;
+	int		i;
+	char	*s;
 
 	s = NULL;
-	split = interesting_split(cmd, 0, 0, 0);
 	i = 0;
 	while (split[i])
 	{
@@ -81,7 +82,15 @@ void	interpret_cmd(char *cmd, t_cmdlst **lst)
 			ft_memset(s, 0, ft_strlen(s));
 		++i;
 	}
+	free(s);
+}
+
+void	interpret_cmd(char *cmd, t_cmdlst **lst)
+{
+	char		**split;
+
+	split = interesting_split(cmd, 0);
+	fill_cmdlst(split, lst);
 	fill_cmd_info(lst);
 	ft_free2d(split);
-	free(s);
 }

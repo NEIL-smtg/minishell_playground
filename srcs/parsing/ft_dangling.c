@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 00:22:02 by suchua            #+#    #+#             */
-/*   Updated: 2023/03/24 01:15:32 by suchua           ###   ########.fr       */
+/*   Updated: 2023/04/24 22:39:29 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ int	dangling_dquote(char *str)
 	return (dquote);
 }
 
-int	dangling_bracket(char *str)
+int	dangling_bracket(char *str, int dq, int sq, int echo)
 {
 	int	len;
 	int	count;
@@ -61,14 +61,18 @@ int	dangling_bracket(char *str)
 	count = 0;
 	while (i < len)
 	{
-		if (str[i] == '(')
+		if (!ft_strncmp("echo", &str[i], 4))
+			echo = 1;
+		if (str[i] == 34)
+			dq = !dq;
+		if (str[i] == 39)
+			sq = !sq;
+		if (!echo && !dq && !sq && str[i] == '(')
 			++count;
-		else if (str[i] == ')')
-		{
+		else if (!echo && !dq && !sq && str[i] == ')')
 			--count;
-			if (count < 0)
-				return (0);
-		}
+		if (echo && !dq && !sq && instr_split(&str[i]))
+			echo = 0;
 		++i;
 	}
 	return (count == 0);
@@ -76,7 +80,8 @@ int	dangling_bracket(char *str)
 
 int	ft_dangling(char *str, int print)
 {
-	if (dangling_dquote(str) || dangling_squote(str) || !dangling_bracket(str))
+	if (dangling_dquote(str) || dangling_squote(str)
+		|| !dangling_bracket(str, 0, 0, 0))
 	{
 		if (print)
 		{

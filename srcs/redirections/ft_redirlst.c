@@ -1,29 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   ft_redirlst.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/01 20:34:38 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/12 01:45:29 by suchua           ###   ########.fr       */
+/*   Created: 2023/04/16 23:44:34 by suchua            #+#    #+#             */
+/*   Updated: 2023/04/24 22:01:17 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	free_everything(t_shell *info)
+void	redirlst_addback(t_redirlst **rlst, char *filename, int fd)
 {
-	free(info->input_line);
-	ft_free2d(info->ms_env);
-	free(info->ms_prompt);
-}
+	t_redirlst	*new;
+	t_redirlst	*tmp;	
 
-void	swap_str(char **s1, char **s2)
-{
-	char	*tmp;
-
-	tmp = *s1;
-	*s1 = *s2;
-	*s2 = tmp;
+	if (fd == -1)
+	{
+		perror("open");
+		return ;
+	}
+	new = ft_calloc(1, sizeof(t_redirlst));
+	new->next = NULL;
+	new->filename = ft_strdup(filename);
+	new->fd = fd;
+	if (!rlst || !*rlst)
+		*rlst = new;
+	else
+	{
+		tmp = *rlst;
+		while (tmp->next)
+			tmp = tmp->next;
+		tmp->next = new;
+	}
 }

@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 01:35:34 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/19 19:01:26 by suchua           ###   ########.fr       */
+/*   Updated: 2023/04/24 23:43:09 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +39,26 @@ static void	combine_infile(t_shell *info)
 		continue ;
 }
 
+static void	redirect_child_process(int flag, t_shell *info,
+	t_redirlst *tmpout, char *cmd)
+{
+	char	**s_cmd;
+
+	if (!flag)
+		s_cmd = ft_split(cmd, 32);
+	else
+		s_cmd = ft_split("cat ", 32);
+	if (info->prevfd != -1)
+		dup2(info->prevfd, 0);
+	dup2(tmpout->fd, 1);
+	close(tmpout->fd);
+	execve(get_cmd_path(s_cmd[0]), s_cmd, info->ms_env);
+	exit(127);
+}
+
 void	redirect_output(int piping, t_shell *info, char *cmd)
 {
 	t_redirlst	*tmpout;
-	char		**s_cmd;
 	int			flag;
 
 	tmpout = info->outfile;
@@ -50,18 +66,7 @@ void	redirect_output(int piping, t_shell *info, char *cmd)
 	while (tmpout)
 	{
 		if (fork() == 0)
-		{
-			if (!flag)
-				s_cmd = ft_split(cmd, 32);
-			else
-				s_cmd = ft_split("cat ", 32);
-			if (info->prevfd != -1)
-				dup2(info->prevfd, 0);
-			dup2(tmpout->fd, 1);
-			close(tmpout->fd);
-			execve(get_cmd_path(s_cmd[0]), s_cmd, info->ms_env);
-			exit(127);
-		}
+			redirect_child_process(flag, info, tmpout, cmd);
 		flag = 1;
 		close(info->prevfd);
 		info->prevfd = open(tmpout->filename, O_RDONLY);
@@ -74,37 +79,6 @@ void	redirect_output(int piping, t_shell *info, char *cmd)
 		close(info->prevfd);
 		info->prevfd = -1;
 	}
-	while (waitpid(-1, &info->ms_status, 0) > 0)
-		continue ;
-}
-
-void	shell_output(int piping, t_shell *info, char *cmd)
-{
-	char	**s_cmd;
-	pid_t	id;
-
-	if (piping && pipe(info->fd) == -1)
-		return ;
-	id = fork();
-	if (id == -1)
-		return ;
-	if (id == 0)
-	{
-		s_cmd = ft_split(cmd, 32);
-		if (piping)
-		{
-			dup2(info->fd[1], 1);
-			close(info->fd[0]);
-			close(info->fd[1]);
-		}
-		if (info->prevfd != -1)
-			dup2(info->prevfd, 0);
-		execve(get_cmd_path(s_cmd[0]), s_cmd, info->ms_env);
-		exit(127);
-	}
-	close(info->fd[1]);
-	if (piping)
-		info->prevfd = info->fd[0];
 	while (waitpid(-1, &info->ms_status, 0) > 0)
 		continue ;
 }

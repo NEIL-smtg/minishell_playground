@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_cmdredir.c                                      :+:      :+:    :+:   */
+/*   ft_redirections.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/15 23:46:42 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/18 01:59:35 by suchua           ###   ########.fr       */
+/*   Updated: 2023/04/24 23:39:56 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static void	build_redirlst(char *filename, t_shell *info, int type)
 {
 	if (type == L1)
 		redirlst_addback(&info->infile, filename,
-				open(filename, O_RDONLY));
+			open(filename, O_RDONLY));
 	else if (type == R2)
 		redirlst_addback(&info->outfile, filename,
 			open(filename, O_RDWR | O_APPEND | O_CREAT, 0000644));

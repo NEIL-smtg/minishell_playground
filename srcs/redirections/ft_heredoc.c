@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/16 00:19:30 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/18 02:02:08 by suchua           ###   ########.fr       */
+/*   Updated: 2023/04/24 22:00:45 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ char	*get_limiter(char *cmd)
 	return (ft_substr(cmd, i, j));
 }
 
-static void read_input(int h_fd, char *limiter, int pipe_flag)
+static void	read_input(int h_fd, char *limiter, int pipe_flag)
 {
 	char	*input;
 
@@ -60,6 +60,7 @@ void	heredoc(char *limiter, t_shell *info, t_cmdlst *next)
 	if (next && !ft_strncmp(next->cmd, "|", 2))
 		pipe_flag = 1;
 	read_input(h_fd, limiter, pipe_flag);
-	redirlst_addback(&info->infile, ".heredoc_tmp", open(".heredoc_tmp", O_RDONLY));
+	redirlst_addback(&info->infile, ".heredoc_tmp",
+		open(".heredoc_tmp", O_RDONLY));
 	free(limiter);
 }

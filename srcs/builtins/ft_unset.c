@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 23:03:21 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/19 23:14:05 by suchua           ###   ########.fr       */
+/*   Updated: 2023/04/24 22:00:03 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static void	search_and_replace(char *target, t_shell *info)
 		if (!ft_strncmp(target, info->ms_env[i], ft_strlen(target)))
 		{
 			reconstruct_env(info, i);
-			return ;			
+			return ;
 		}
 	}
 }

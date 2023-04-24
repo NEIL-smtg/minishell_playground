@@ -6,37 +6,11 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 01:28:31 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/24 02:37:10 by suchua           ###   ########.fr       */
+/*   Updated: 2023/04/24 22:44:25 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	ft_free_cmdlst(t_cmdlst **lst)
-{
-	t_cmdlst	*tmp;
-
-	while ((*lst))
-	{
-		tmp = (*lst)->next;
-		free((*lst)->cmd);
-		free((*lst));
-		(*lst) = tmp;
-	}
-}
-
-void	print_lst(t_cmdlst *lst)
-{
-	t_cmdlst	*tmp;
-
-	tmp = lst;
-	while (tmp)
-	{
-		ft_printf("%s\n", tmp->cmd);
-		ft_printf("open_brac = %d close_brac = %d within_brac = %d\n", tmp->open_brac, tmp->closed_brac, tmp->within_brac);
-		tmp = tmp->next;
-	}
-}
 
 void	ft_cmdlst_addback(t_cmdlst	**lst, char *s)
 {
@@ -47,6 +21,9 @@ void	ft_cmdlst_addback(t_cmdlst	**lst, char *s)
 	new->cmd = ft_strdup(s);
 	new->next = NULL;
 	new->prev = NULL;
+	new->within_brac = 0;
+	new->open_brac = 0;
+	new->closed_brac = 0;
 	if (!lst || !*lst)
 		*lst = new;
 	else
@@ -57,6 +34,12 @@ void	ft_cmdlst_addback(t_cmdlst	**lst, char *s)
 		new->prev = tmp;
 		tmp->next = new;
 	}
+}
+
+//if bonus == '||' or '&&' , returns 1 when s == double
+int	cmdlst_is_double(char *s, char *bonus)
+{
+	return (ft_strncmp(s, bonus, ft_strlen(bonus)) == 0);
 }
 
 int	to_split(char *s)
@@ -74,53 +57,27 @@ int	to_split(char *s)
 
 int	instr_split(char *s)
 {
+	if (!ft_strncmp(s, "||", 2))
+		return (2);
 	if (!ft_strncmp(s, "|", 1))
 		return (1);
-	if (!ft_strncmp(s, "||", 2))
-		return (1);
 	if (!ft_strncmp(s, "&&", 2))
-		return (1);
+		return (2);
 	if (!ft_strncmp(s, ";", 1))
 		return (1);
 	return (0);
 }
 
-//sq = single quote, dq = double quote
-char	**interesting_split(char *cmd, int depth, int sq, int dq)
+void	print_lst(t_cmdlst *lst)
 {
-	char	**res;
-	int		i;
-	char	*sub;
-	int		echo;
-	
-	while (ft_isspace(*cmd))
-		cmd++;
-	i = -1;
-	echo = 0;
-	while (cmd[++i])
-	{
-		if (!ft_strncmp("echo", &cmd[i], 4))
-			echo = 1;
-		if (cmd[i] == 34)
-			sq = !sq;
-		if (cmd[i] == 39)
-			dq = !dq;
-		if (!sq && !dq && !echo && instr_split(&cmd[i]))
-			echo = 0;
-		if (ft_isspace(cmd[i]) && !sq && !dq && !echo)
-			break ;
-	}
-	sub = ft_substr(cmd, 0, (size_t) i);
-	if (!cmd[i])
-		res = ft_calloc(depth + 2, sizeof(char *));
-	else
-		res = interesting_split(cmd + i, depth + 1, 0, 0);
-	res[depth] = sub;
-	return (res);
-}
+	t_cmdlst	*tmp;
 
-//if bonus == '||' | '&&' , returns 1 when s == double
-int	cmdlst_is_double(char *s, char *bonus)
-{
-	return (ft_strncmp(s, bonus, ft_strlen(bonus)) == 0);
+	tmp = lst;
+	while (tmp)
+	{
+		ft_printf("%s\n", tmp->cmd);
+		ft_printf("open_brac = %d close_brac = %d within_brac = %d\n",
+			tmp->open_brac, tmp->closed_brac, tmp->within_brac);
+		tmp = tmp->next;
+	}
 }
