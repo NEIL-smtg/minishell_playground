@@ -6,13 +6,13 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 02:07:08 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/19 18:52:23 by suchua           ###   ########.fr       */
+/*   Updated: 2023/04/26 20:13:40 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	store_files(char *target, t_files **files)
+int	store_files(char *target, t_files **files, int cmd_type)
 {
 	struct dirent	*entry;
 	DIR				*dir;
@@ -24,7 +24,7 @@ int	store_files(char *target, t_files **files)
 	while (entry != NULL)
 	{
 		if (target_found(entry->d_name, target))
-			files_addback(files, entry->d_name);
+			files_addback(files, entry->d_name, cmd_type);
 		entry = readdir(dir);
 	}
 	free(dir);
@@ -65,6 +65,7 @@ int	manage_wildcard(t_cmdlst **node)
 {
 	int		i;
 	t_files	*files;
+	int		ret;
 
 	i = -1;
 	files = NULL;
@@ -72,8 +73,9 @@ int	manage_wildcard(t_cmdlst **node)
 	{
 		if ((*node)->cmd[i] == '*')
 		{
-			if (!is_curr_dir((*node)->cmd, i)
-				|| !store_files(get_target((*node)->cmd, i + 1), &files))
+			ret = is_curr_dir((*node)->cmd, i);
+			if (!ret || !store_files(get_target((*node)->cmd, i + 1),
+					&files, ret))
 				return (0);
 			overwrite_cmd(node, files, &i, i);
 			ft_free_files_lst(&files);

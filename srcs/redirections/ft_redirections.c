@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/15 23:46:42 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/24 23:39:56 by suchua           ###   ########.fr       */
+/*   Updated: 2023/04/26 19:05:15 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,8 @@ int	set_redir(t_shell *info, t_cmdlst **node)
 	int			i;
 
 	tmp = *node;
+	if (!ft_strncmp("echo", tmp->cmd, 4))
+		return (0);
 	info->infile = NULL;
 	info->outfile = NULL;
 	i = -1;

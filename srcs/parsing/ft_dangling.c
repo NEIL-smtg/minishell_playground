@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 00:22:02 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/24 22:39:29 by suchua           ###   ########.fr       */
+/*   Updated: 2023/04/26 20:03:36 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,11 @@ int	ft_dangling(char *str, int print)
 			add_history(str);
 			ft_putendl_fd("minishell: syntax error: unexpected end of file", 2);
 		}
+		return (0);
+	}
+	if (dangling_redir(str))
+	{
+		add_history(str);
 		return (0);
 	}
 	return (1);

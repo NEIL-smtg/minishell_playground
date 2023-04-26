@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 19:22:17 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/25 00:05:27 by suchua           ###   ########.fr       */
+/*   Updated: 2023/04/26 20:01:15 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,10 @@
 # include <signal.h>
 # include <string.h>
 
-# define R1 1
-# define R2 2
-# define L1 3
-# define L2 4
+# define R1 5
+# define R2 6
+# define L1 7
+# define L2 8
 # define FREE_PIPE 1
 # define PRINT 1
 
@@ -105,6 +105,7 @@ int		dangling_dquote(char *str);
 int		dangling_squote(char *str);
 int		dangling_bracket(char *str, int dq, int sq, int echo);
 int		dangling_pipe(char *str);
+int		dangling_redir(char *str);
 
 //signal
 void	init_signal(void);
@@ -129,7 +130,7 @@ void	heredoc(char *limiter, t_shell *info, t_cmdlst *next);
 int		is_curr_dir(char *cmd, int i);
 char	*get_target(char *cmd, int i);
 int		target_found(char *file, char *target);
-void	files_addback(t_files **files, char *file);
+void	files_addback(t_files **files, char *file, int cmd_type);
 
 //utils
 void	msg_cmd_not_found(char **cmd);

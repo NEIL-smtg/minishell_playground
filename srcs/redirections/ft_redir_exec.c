@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 01:35:34 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/24 23:43:09 by suchua           ###   ########.fr       */
+/*   Updated: 2023/04/26 18:33:29 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,8 @@ static void	redirect_child_process(int flag, t_shell *info,
 		dup2(info->prevfd, 0);
 	dup2(tmpout->fd, 1);
 	close(tmpout->fd);
+	if (info->prevfd != -1)
+		close(info->prevfd);
 	execve(get_cmd_path(s_cmd[0]), s_cmd, info->ms_env);
 	exit(127);
 }
@@ -67,6 +69,7 @@ void	redirect_output(int piping, t_shell *info, char *cmd)
 	{
 		if (fork() == 0)
 			redirect_child_process(flag, info, tmpout, cmd);
+		waitpid(-1, &info->ms_status, 0);
 		flag = 1;
 		close(info->prevfd);
 		info->prevfd = open(tmpout->filename, O_RDONLY);

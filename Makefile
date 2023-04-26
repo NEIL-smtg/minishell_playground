@@ -1,6 +1,7 @@
 NAME		=	minishell
 MAN_FILES	=	main signal/ft_signal_handling utils/utils utils/free \
 				parsing/ft_parse_input parsing/ft_dangling parsing/ft_dangling_pipe \
+				parsing/ft_dangling_redir \
 				wildcard/ft_wildcard wildcard/ft_wildcard_utils \
 				cmdlst/ft_cmdlst cmdlst/ft_cmdlst_utils exec/ft_exec cmdlst/ft_ms_split\
 				redirections/ft_redirections redirections/ft_heredoc \
@@ -26,15 +27,16 @@ HEREDOC		=	.heredoc_tmp
 DEBUG_FLAG	=	-fdiagnostics-color=always -g ${file} -o debug
 
 all:
-	@mkdir -p $(OBJS_DIR)
+	@mkdir -p $(OBJS_DIR) $(OBJS_DIR)signal $(OBJS_DIR)utils $(OBJS_DIR)parsing $(OBJS_DIR)wildcard
+	@mkdir -p $(OBJS_DIR)cmdlst $(OBJS_DIR)redirections $(OBJS_DIR)builtins $(OBJS_DIR)exec
 	@make $(LIBFT_DIR)$(LIBFT)
 	@make $(NAME)
 
 $(OBJS_DIR)%.o: $(SRC_DIR)%.c
 	@$(GCC) $(CFLAGS) $(INC) -c $< -o $@
 
-$(NAME): $(SRCS)
-	$(GCC) $(FSAN) $(CFLAGS) $(INC) $(RL) $(SRCS) $(LIBFT_DIR)$(LIBFT) -o $(NAME)
+$(NAME): $(OBJS)
+	$(GCC) $(CFLAGS) $(INC) $(RL) $(OBJS) $(LIBFT_DIR)$(LIBFT) -o $(NAME)
 
 $(LIBFT_DIR)$(LIBFT):
 	@make -C $(LIBFT_DIR)
