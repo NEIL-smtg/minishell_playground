@@ -18,8 +18,10 @@ OBJS		=	$(addprefix $(OBJS_DIR), $(addsuffix .o, $(MAN_FILES)))
 GCC			=	gcc
 CFLAGS		=	-Wall -Werror -Wextra
 INC			=	-I/usr/local/opt/readline/include/
+# INC			=	-I/opt/homebrew/Cellar/readline/8.2.1/include/
 INC			+=	-I include/
 RL			=	-L/usr/local/opt/readline/lib/
+# RL			=	-L/opt/homebrew/Cellar/readline/8.2.1/lib/
 RL			+=	-lreadline
 RM			=	rm -rf
 FSAN		=	-fsanitize=address -g3

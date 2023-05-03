@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/15 23:46:42 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/26 19:05:15 by suchua           ###   ########.fr       */
+/*   Updated: 2023/05/03 19:06:10 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,12 @@ static void	trim_cmd(t_cmdlst **node)
 	flag = 0;
 	while (tmp->cmd[++i])
 	{
+		if (tmp->cmd[i] == '<' || tmp->cmd[i] == '>')
+		{
+			tmp->cmd[i] = 32;
+			flag = 1;
+			continue ;
+		}
 		while (flag && tmp->cmd[i] && ft_isspace(tmp->cmd[i]))
 			++i;
 		while (flag && tmp->cmd[i] && !ft_isspace(tmp->cmd[i]))
@@ -45,11 +51,6 @@ static void	trim_cmd(t_cmdlst **node)
 			++i;
 		}
 		flag = 0;
-		if (tmp->cmd[i] == '<' || tmp->cmd[i] == '>')
-		{
-			tmp->cmd[i] = 32;
-			flag = 1;
-		}
 	}
 }
 
