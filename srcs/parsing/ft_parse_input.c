@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/18 16:29:44 by suchua            #+#    #+#             */
-/*   Updated: 2023/05/03 16:25:20 by suchua           ###   ########.fr       */
+/*   Updated: 2023/05/05 02:21:59 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static char	*search_result(t_shell *info, char *needle)
 	int		i;
 	int		len;
 
-	if (!ft_strncmp("?", needle, 2))
+	if (!ft_strncmp("?", needle, 1))
 		return (ft_itoa(info->ms_status / 256));
 	i = -1;
 	while (info->ms_env[++i])
@@ -33,7 +33,7 @@ static char	*search_result(t_shell *info, char *needle)
 	return (NULL);
 }
 
-//i = input index, j = new index
+//	i = input index, j = new index
 static void	overwrite_with_env_value(char **new, t_shell *info, int *i, int *j)
 {
 	char	*res;
@@ -44,7 +44,7 @@ static void	overwrite_with_env_value(char **new, t_shell *info, int *i, int *j)
 	k = *i + 1;
 	while (info->input_line[k] && ft_isalpha(info->input_line[k]))
 		++k;
-	needle = ft_substr(info->input_line, *i + 1, k - *i - 1);
+	needle = ft_substr(info->input_line, *i + 1, k - *i);
 	res = search_result(info, needle);
 	if (!res)
 		res = ft_substr(info->input_line, *i, k);

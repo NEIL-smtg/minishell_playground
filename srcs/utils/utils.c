@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 20:34:38 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/24 22:44:16 by suchua           ###   ########.fr       */
+/*   Updated: 2023/05/05 02:13:43 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,44 +44,4 @@ char	*get_cmd_path(char *cmd)
 	}
 	ft_free2d(path);
 	return (NULL);
-}
-
-void	msg_cmd_not_found(char **cmd)
-{
-	char	*path;
-
-	path = get_cmd_path(cmd[0]);
-	if (!path)
-	{
-		ft_putstr_fd("minishell: Command not found: ", 2);
-		ft_putendl_fd(cmd[0], 2);
-	}
-	else
-		free(path);
-	ft_free2d(cmd);
-}
-
-int	get_files_num(t_files *files)
-{
-	int		i;
-	t_files	*tmp;
-
-	i = 0;
-	tmp = files;
-	while (tmp)
-	{
-		++i;
-		tmp = tmp->next;
-	}
-	return (i);
-}
-
-t_files	*get_last_files(t_files *files)
-{
-	t_files	*tmp;
-
-	tmp = files;
-	while (tmp->next)
-		tmp = tmp->next;
-	return (tmp);
 }

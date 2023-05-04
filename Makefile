@@ -6,9 +6,10 @@ MAN_FILES	=	main signal/ft_signal_handling utils/utils utils/free \
 				cmdlst/ft_cmdlst cmdlst/ft_cmdlst_utils exec/ft_exec cmdlst/ft_ms_split\
 				redirections/ft_redirections redirections/ft_heredoc \
 				redirections/ft_redirlst redirections/ft_redir_exec \
-				redirections/ft_shell_output \
+				redirections/ft_shell_output redirections/ft_redirect_output\
 				builtins/ft_builtin builtins/ft_cd builtins/ft_echo \
-				builtins/ft_env builtins/ft_export builtins/ft_pwd builtins/ft_unset
+				builtins/ft_env builtins/ft_export builtins/ft_pwd builtins/ft_unset \
+				error/ft_error
 SRC_DIR		=	srcs/
 OBJS_DIR	=	objs/
 LIBFT_DIR	=	Libft/
@@ -17,11 +18,11 @@ SRCS		=	$(addprefix $(SRC_DIR), $(addsuffix .c, $(MAN_FILES)))
 OBJS		=	$(addprefix $(OBJS_DIR), $(addsuffix .o, $(MAN_FILES)))
 GCC			=	gcc
 CFLAGS		=	-Wall -Werror -Wextra
-INC			=	-I/usr/local/opt/readline/include/
-# INC			=	-I/opt/homebrew/Cellar/readline/8.2.1/include/
+# INC			=	-I/usr/local/opt/readline/include/
+INC			=	-I/opt/homebrew/Cellar/readline/8.2.1/include/
 INC			+=	-I include/
-RL			=	-L/usr/local/opt/readline/lib/
-# RL			=	-L/opt/homebrew/Cellar/readline/8.2.1/lib/
+# RL			=	-L/usr/local/opt/readline/lib/
+RL			=	-L/opt/homebrew/Cellar/readline/8.2.1/lib/
 RL			+=	-lreadline
 RM			=	rm -rf
 FSAN		=	-fsanitize=address -g3
@@ -30,7 +31,7 @@ DEBUG_FLAG	=	-fdiagnostics-color=always -g ${file} -o debug
 
 all:
 	@mkdir -p $(OBJS_DIR) $(OBJS_DIR)signal $(OBJS_DIR)utils $(OBJS_DIR)parsing $(OBJS_DIR)wildcard
-	@mkdir -p $(OBJS_DIR)cmdlst $(OBJS_DIR)redirections $(OBJS_DIR)builtins $(OBJS_DIR)exec
+	@mkdir -p $(OBJS_DIR)cmdlst $(OBJS_DIR)redirections $(OBJS_DIR)builtins $(OBJS_DIR)exec $(OBJS_DIR)error
 	@make $(LIBFT_DIR)$(LIBFT)
 	@make $(NAME)
 

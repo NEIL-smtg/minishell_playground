@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 21:45:38 by suchua            #+#    #+#             */
-/*   Updated: 2023/05/03 16:28:04 by suchua           ###   ########.fr       */
+/*   Updated: 2023/05/05 02:30:39 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ void	init(t_shell *info, char **env)
 	char			*ms;
 	struct termios	term;
 
-	tcgetattr(STDIN_FILENO, &info->term.original_setting);
 	user = getenv("USER");
 	ms = "@minishell->";
 	info->ms_prompt = ft_strjoin(user, ms);
@@ -48,6 +47,7 @@ void	get_input(t_shell *info)
 		ft_parse_input(info);
 		interpret_cmd(info->input_line, &info->cmdlst);
 		ft_parse_wildcard(info);
+		// print_lst(info->cmdlst);
 		ft_cmdexec(info);
 		ft_free_cmdlst(&info->cmdlst);
 		free(info->input_line);
@@ -62,6 +62,5 @@ int	main(int ac, char **av, char **env)
 	get_input(&info);
 	(void) ac;
 	(void) av;
-	tcsetattr(STDIN_FILENO, TCSAFLUSH, &info.term.original_setting);
 	exit(EXIT_SUCCESS);
 }

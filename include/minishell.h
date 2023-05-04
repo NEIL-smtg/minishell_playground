@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 19:22:17 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/26 20:01:15 by suchua           ###   ########.fr       */
+/*   Updated: 2023/05/05 02:19:10 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,27 +26,13 @@
 # include <signal.h>
 # include <string.h>
 
-# define R1 5
-# define R2 6
-# define L1 7
-# define L2 8
-# define FREE_PIPE 1
-# define PRINT 1
+# define R1 	5
+# define R2 	6
+# define L1 	7
+# define L2		8
+# define PRINT	1
 
-# define DOUBLE_PIPE 1
-# define DOUBLE_N    2
-# define PIPE        3
-# define NORMAL      4
-
-//store the original setting of default terminal
-//reset terminal back to default setting before exiting the program
-//not sure if it matters
-typedef struct s_term_setting
-{
-	struct termios	original_setting;
-}	t_term;
-
-//to store fd of redirections
+//	to store info of files to redirect
 typedef struct s_redirlst
 {
 	int					fd;
@@ -54,25 +40,17 @@ typedef struct s_redirlst
 	struct s_redirlst	*next;
 }	t_redirlst;
 
-//to store the files in wildcard
+//	wildcard linked list, store file that found in directory
 typedef struct s_files
 {
-	char			*file;
-	struct s_files	*next;
+	char				*file;
+	struct s_files		*next;
 }	t_files;
 
-//to check if number of files before and after wildcard is the same
-//if its the same, meaning no file is found is that directory, hence perror
-typedef struct s_file_num
-{
-	int	before;
-	int	after;
-}	t_files_num;
-
-//retation = relation of prev cmd and nxt cmd
-//open_brac = indicates bracket starts
-//close_brac = indicates bracket closed
-//no brac = cmd isnt within bracket
+//	retation	=	relation of prev cmd and nxt cmd
+//	open_brac	=	indicates bracket starts
+//	close_brac	=	indicates bracket closed
+//	no brac		=	cmd isnt within bracket
 typedef struct s_cmdlst
 {
 	char				*cmd;
@@ -84,22 +62,21 @@ typedef struct s_cmdlst
 	struct s_cmdlst		*next;
 }	t_cmdlst;
 
-//main data struct
+//	shell information
 typedef struct s_shell
 {
-	char		*ms_prompt;
-	char		**ms_env;
-	char		*input_line;
-	int			ms_status;
-	int			fd[2];
-	int			prevfd;
-	t_term		term;
-	t_cmdlst	*cmdlst;
-	t_redirlst	*infile;
-	t_redirlst	*outfile;
+	char				*ms_prompt;
+	char				**ms_env;
+	char				*input_line;
+	int					ms_status;
+	int					fd[2];
+	int					prevfd;
+	t_cmdlst			*cmdlst;
+	t_redirlst			*infile;
+	t_redirlst			*outfile;
 }	t_shell;
 
-//check dangling
+//	check dangling
 int		ft_dangling(char *str, int print);
 int		dangling_dquote(char *str);
 int		dangling_squote(char *str);
@@ -107,45 +84,42 @@ int		dangling_bracket(char *str, int dq, int sq, int echo);
 int		dangling_pipe(char *str);
 int		dangling_redir(char *str);
 
-//signal
+//	signal handling
 void	init_signal(void);
 
-//parse input
+//	parse input (manage wildcard, env variables)
 void	ft_parse_input(t_shell *info);
 void	ft_parse_wildcard(t_shell *info);
 
-//redir
+//	redirection
 int		set_redir(t_shell *info, t_cmdlst **node);
 void	ft_redir_exec(t_shell *info, t_cmdlst *node);
+void	redirect_output(int piping, t_shell *info, char *cmd);
 void	shell_output(int piping, t_shell *info, char *cmd);
 
-//redirlst
+//	build redirection lst
 void	redirlst_addback(t_redirlst **rlst, char *filename, int fd);
 
-//heredoc
+//	heredoc
 char	*get_limiter(char *cmd);
 void	heredoc(char *limiter, t_shell *info, t_cmdlst *next);
 
-//wildcard
+//	wildcard
 int		is_curr_dir(char *cmd, int i);
 char	*get_target(char *cmd, int i);
 int		target_found(char *file, char *target);
 void	files_addback(t_files **files, char *file, int cmd_type);
 
-//utils
-void	msg_cmd_not_found(char **cmd);
+//	free stuff
 void	free_everything(t_shell *info);
-void	swap_str(char **s1, char **s2);
 void	ft_free_files_lst(t_files **lst);
-int		get_files_num(t_files *files);
-t_files	*get_last_files(t_files *files);
 void	ft_free_infile_outfile(t_shell *info);
 
-//cmdlst
+//	cmdlst
 void	interpret_cmd(char *cmd, t_cmdlst **lst);
 void	ft_cmdexec(t_shell *info);
 
-//cmdlst utils
+//	cmdlst utils
 void	ft_free_cmdlst(t_cmdlst **lst);
 void	print_lst(t_cmdlst *lst);
 void	ft_cmdlst_addback(t_cmdlst	**lst, char *s);
@@ -154,10 +128,11 @@ char	**interesting_split(char *cmd, int depth);
 int		cmdlst_is_double(char *s, char *bonus);
 int		instr_split(char *s);
 
-//execve
+//	utils
 char	*get_cmd_path(char *cmd);
+void	swap_str(char **s1, char **s2);
 
-//builtins
+//	builtins
 int		is_builtin(char **s_cmd, t_shell *info, char *ori_cmd);
 int		parent_exec(t_shell *info, t_cmdlst *node);
 void	ft_echo(char **split, char *cmd, t_shell *info);
@@ -166,5 +141,8 @@ void	ft_export(char **s_cmd, t_shell *info);
 void	ft_pwd(char **s_cmd, t_shell *info);
 void	ft_unset(char **s_cmd, t_shell *info);
 void	ft_cd(char **s_cmd, t_shell *info);
+
+// prompt error when cmd not found
+void	cmd_not_found(t_cmdlst *node);
 
 #endif

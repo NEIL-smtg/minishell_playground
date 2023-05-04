@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 23:45:04 by suchua            #+#    #+#             */
-/*   Updated: 2023/05/03 18:53:28 by suchua           ###   ########.fr       */
+/*   Updated: 2023/05/05 01:46:03 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ void	ft_cmdexec(t_shell *info)
 		while (waitpid(-1, &info->ms_status, 0) > 0)
 			continue ;
 		if (info->ms_status)
-			perror("minishell");
+			cmd_not_found(info->cmdlst);
 		if (!tmp || (!ft_strncmp(tmp->cmd, "&&", 3) && info->ms_status))
 			break ;
 		if (!info->ms_status && !ft_strncmp(tmp->cmd, "||", 3))
