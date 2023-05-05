@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 19:22:17 by suchua            #+#    #+#             */
-/*   Updated: 2023/05/05 21:33:51 by suchua           ###   ########.fr       */
+/*   Updated: 2023/05/06 02:40:06 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define MINISHELL_H
 
 # include "../Libft/include/libft.h"
+# include "file_list.h"
 # include <fcntl.h>
 # include <readline/history.h>
 # include <readline/readline.h>
@@ -32,36 +33,6 @@
 # define L2		8
 # define PRINT	1
 
-//	to store info of files to redirect
-typedef struct s_redirlst
-{
-	int					fd;
-	char				*filename;
-	struct s_redirlst	*next;
-}	t_redirlst;
-
-//	wildcard linked list, store file that found in directory
-typedef struct s_files
-{
-	char				*file;
-	struct s_files		*next;
-}	t_files;
-
-//	retation	=	relation of prev cmd and nxt cmd
-//	open_brac	=	indicates bracket starts
-//	close_brac	=	indicates bracket closed
-//	no brac		=	cmd isnt within bracket
-typedef struct s_cmdlst
-{
-	char				*cmd;
-	int					open_brac;
-	int					closed_brac;
-	int					within_brac;
-	int					relation;
-	struct s_cmdlst		*prev;
-	struct s_cmdlst		*next;
-}	t_cmdlst;
-
 //	shell information
 typedef struct s_shell
 {
@@ -72,6 +43,7 @@ typedef struct s_shell
 	int					fd[2];
 	int					heredoc_fd[2];
 	int					prevfd;
+	int					open_error;
 	t_cmdlst			*cmdlst;
 	t_redirlst			*infile;
 	t_redirlst			*outfile;
@@ -91,6 +63,7 @@ void	init_signal(void);
 //	parse input (manage wildcard, env variables)
 void	ft_parse_input(t_shell *info);
 void	ft_parse_wildcard(t_shell *info);
+void	interpret_cmd(char *cmd, t_cmdlst **lst);
 
 //	redirection
 int		redir_within_quotes(char *cmd);
@@ -117,9 +90,11 @@ void	free_everything(t_shell *info);
 void	ft_free_files_lst(t_files **lst);
 void	ft_free_infile_outfile(t_shell *info);
 
-//	cmdlst
-void	interpret_cmd(char *cmd, t_cmdlst **lst);
+//	execute
 void	ft_cmdexec(t_shell *info);
+void	skip_cmd_decider(t_cmdlst **node);
+void	wait_child_process(t_shell *info);
+int		is_doubles(char *s); // || &&
 
 //	cmdlst utils
 void	ft_free_cmdlst(t_cmdlst **lst);
@@ -145,6 +120,6 @@ void	ft_unset(char **s_cmd, t_shell *info);
 void	ft_cd(char **s_cmd, t_shell *info);
 
 // prompt error when cmd not found
-void	cmd_not_found(t_cmdlst *node);
+void	cmd_not_found(t_cmdlst *node, t_shell *info);
 
 #endif

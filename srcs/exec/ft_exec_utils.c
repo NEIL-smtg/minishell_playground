@@ -1,39 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_redir_utils.c                                   :+:      :+:    :+:   */
+/*   ft_exec_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/05 20:08:04 by suchua            #+#    #+#             */
-/*   Updated: 2023/05/06 01:59:55 by suchua           ###   ########.fr       */
+/*   Created: 2023/05/06 02:30:39 by suchua            #+#    #+#             */
+/*   Updated: 2023/05/06 02:39:33 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	is_redir(char c)
+int	is_doubles(char *s)
 {
-	return (c == '<' || c == '>');
+	return (ft_strncmp(s, "||", 3) == 0
+		|| ft_strncmp(s, "&&", 3) == 0);
 }
 
-int	redir_within_quotes(char *cmd)
+void	wait_child_process(t_shell *info)
 {
-	int		i;
-	int		sq;
-	int		dq;
+	while (waitpid(-1, &info->ms_status, 0) > 0)
+		continue ;
+}
 
-	i = -1;
-	dq = 0;
-	sq = 0;
-	while (cmd[++i])
-	{
-		if (cmd[i] == 34)
-			dq = !dq;
-		if (cmd[i] == 39)
-			sq = !sq;
-		if (is_redir(cmd[i]) && !dq && !sq)
-			return (0);
-	}
-	return (1);
+static int skip(t_cmdlst *node)
+{
+	return ((node->next->within_brac || !is_doubles(node->next->cmd)));
+}
+
+void	skip_cmd_decider(t_cmdlst **node)
+{
+	while ((*node)->next && skip(*node))
+		(*node) = (*node)->next;
 }

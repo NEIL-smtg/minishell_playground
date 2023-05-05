@@ -3,7 +3,8 @@ MAN_FILES	=	main signal/ft_signal_handling utils/utils utils/free \
 				parsing/ft_parse_input parsing/ft_dangling parsing/ft_dangling_pipe \
 				parsing/ft_dangling_redir \
 				wildcard/ft_wildcard wildcard/ft_wildcard_utils \
-				cmdlst/ft_cmdlst cmdlst/ft_cmdlst_utils exec/ft_exec cmdlst/ft_ms_split\
+				cmdlst/ft_cmdlst cmdlst/ft_cmdlst_utils cmdlst/ft_ms_split\
+				exec/ft_exec exec/ft_exec_utils \
 				redirections/ft_redirections redirections/ft_heredoc \
 				redirections/ft_redirlst redirections/ft_redir_exec \
 				redirections/ft_shell_output redirections/ft_redirect_output\
@@ -19,11 +20,13 @@ SRCS		=	$(addprefix $(SRC_DIR), $(addsuffix .c, $(MAN_FILES)))
 OBJS		=	$(addprefix $(OBJS_DIR), $(addsuffix .o, $(MAN_FILES)))
 GCC			=	gcc
 CFLAGS		=	-Wall -Werror -Wextra
+# INC			=	-I/usr/local/opt/readline/include/
+# # INC			=	-I/opt/homebrew/Cellar/readline/8.2.1/include/
+# INC			+=	-I include/
+# RL			=	-L/usr/local/opt/readline/lib/
+# # RL			=	-L/opt/homebrew/Cellar/readline/8.2.1/lib/
 INC			=	-I/usr/local/opt/readline/include/
-# INC			=	-I/opt/homebrew/Cellar/readline/8.2.1/include/
-INC			+=	-I include/
 RL			=	-L/usr/local/opt/readline/lib/
-# RL			=	-L/opt/homebrew/Cellar/readline/8.2.1/lib/
 RL			+=	-lreadline
 RM			=	rm -rf
 FSAN		=	-fsanitize=address -g3
@@ -37,10 +40,10 @@ all:
 	@make $(NAME)
 
 $(OBJS_DIR)%.o: $(SRC_DIR)%.c
-	@$(GCC) $(CFLAGS) $(INC) -c $< -o $@
+	@$(GCC) $(CFLAGS) $(INC) -Iinclude/ -c $< -o $@
 
 $(NAME): $(OBJS)
-	$(GCC) $(CFLAGS) $(INC) $(RL) $(OBJS) $(LIBFT_DIR)$(LIBFT) -o $(NAME)
+	$(GCC) $(FSAN) $(CFLAGS) -Iinclude/ $(INC) $(RL) $(OBJS) $(LIBFT_DIR)$(LIBFT) -o $(NAME)
 
 $(LIBFT_DIR)$(LIBFT):
 	@make -C $(LIBFT_DIR)

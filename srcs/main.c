@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 21:45:38 by suchua            #+#    #+#             */
-/*   Updated: 2023/05/05 21:39:44 by suchua           ###   ########.fr       */
+/*   Updated: 2023/05/06 02:29:08 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ void	init(t_shell *info, char **env)
 	tcgetattr(STDIN_FILENO, &term);
 	term.c_lflag &= ~ECHOCTL;
 	tcsetattr(STDIN_FILENO, TCSANOW, &term);
+	info->open_error = 0;
 }
 
 void	get_input(t_shell *info)
@@ -46,8 +47,7 @@ void	get_input(t_shell *info)
 		add_history(info->input_line);
 		interpret_cmd(info->input_line, &info->cmdlst);
 		ft_parse_wildcard(info);
-		// print_lst(info->cmdlst);
-		// ft_cmdexec(info);
+		ft_cmdexec(info);
 		ft_free_cmdlst(&info->cmdlst);
 		free(info->input_line);
 	}

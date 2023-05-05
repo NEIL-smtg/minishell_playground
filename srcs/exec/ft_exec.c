@@ -6,17 +6,11 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 23:45:04 by suchua            #+#    #+#             */
-/*   Updated: 2023/05/05 19:52:21 by suchua           ###   ########.fr       */
+/*   Updated: 2023/05/06 02:39:25 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-static int	is_doubles(char *s)
-{
-	return (ft_strncmp(s, "||", 3) == 0
-		|| ft_strncmp(s, "&&", 3) == 0);
-}
 
 static void	ft_exec(t_cmdlst *node, t_shell *info)
 {
@@ -88,18 +82,14 @@ void	ft_cmdexec(t_shell *info)
 		if (!exec_pipe(info, &tmp))
 			return ;
 		close(info->prevfd);
-		while (waitpid(-1, &info->ms_status, 0) > 0)
-			continue ;
+		wait_child_process(info);
 		if (info->ms_status)
-			cmd_not_found(info->cmdlst);
+			cmd_not_found(info->cmdlst, info);
 		if (!tmp || (!ft_strncmp(tmp->cmd, "&&", 3) && info->ms_status))
 			break ;
 		if (!info->ms_status && !ft_strncmp(tmp->cmd, "||", 3))
-			while (tmp->next && (tmp->next->within_brac
-					|| !is_doubles(tmp->next->cmd)))
-				tmp = tmp->next;
+			skip_cmd_decider(&tmp);
 		tmp = tmp->next;
 	}
-	while (waitpid(-1, &info->ms_status, 0) > 0)
-		continue ;
+	wait_child_process(info);
 }

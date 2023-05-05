@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 01:35:34 by suchua            #+#    #+#             */
-/*   Updated: 2023/05/05 01:48:01 by suchua           ###   ########.fr       */
+/*   Updated: 2023/05/06 02:37:48 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,7 @@ static void	combine_infile(t_shell *info)
 	}
 	close(info->fd[1]);
 	info->prevfd = info->fd[0];
-	while (waitpid(-1, &info->ms_status, 0) > 0)
-		continue ;
+	wait_child_process(info);
 }
 
 void	ft_redir_exec(t_shell *info, t_cmdlst *node)

@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 01:47:17 by suchua            #+#    #+#             */
-/*   Updated: 2023/05/05 19:50:57 by suchua           ###   ########.fr       */
+/*   Updated: 2023/05/06 02:38:10 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ static void	redirecting(t_shell *info, char *cmd, int piping)
 			redirect_child_process(flag, info, tmpout, cmd);
 		else if (id == -1)
 			return ;
-		waitpid(-1, &info->ms_status, 0);
+		wait_child_process(info);
 		if (info->ms_status)
 			return ;
 		flag = 1;
@@ -68,6 +68,5 @@ void	redirect_output(int piping, t_shell *info, char *cmd)
 		close(info->prevfd);
 		info->prevfd = -1;
 	}
-	while (waitpid(-1, &info->ms_status, 0) > 0)
-		continue ;
+	wait_child_process(info);
 }
