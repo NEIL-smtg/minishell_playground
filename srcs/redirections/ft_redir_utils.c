@@ -1,28 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_signal_handling.c                               :+:      :+:    :+:   */
+/*   ft_redir_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/15 22:32:22 by suchua            #+#    #+#             */
-/*   Updated: 2023/05/05 16:30:00 by suchua           ###   ########.fr       */
+/*   Created: 2023/05/05 20:08:04 by suchua            #+#    #+#             */
+/*   Updated: 2023/05/05 20:12:25 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	signal_handler(int sig)
+int	redir_within_quotes(char *cmd)
 {
-	(void) sig;
-	ft_putendl_fd("", 1);
-	rl_replace_line("", 0);
-	rl_on_new_line();
-	rl_redisplay();
-}
+	int		i;
+	int		quote;
 
-void	init_signal(void)
-{
-	signal(SIGINT, signal_handler);
-	signal(SIGQUIT, SIG_IGN);
+	i = -1;
+	quote = -1;
+	while (cmd[++i])
+	{
+		if (quote == -1 && (cmd[i] == 34 || cmd[i] == 39))
+			quote = cmd[i];
+		else if (quote == cmd[i])
+			quote = -1;
+		if (quote == -1 && (cmd[i] == '<' || cmd[i] == '>'))
+			return (0);
+	}
+	return (1);
 }

@@ -6,13 +6,14 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 01:21:52 by suchua            #+#    #+#             */
-/*   Updated: 2023/05/05 02:14:38 by suchua           ###   ########.fr       */
+/*   Updated: 2023/05/05 19:54:20 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// if the cmd exists, theres no need to print out any msg, since the cmd itself will
+// if the cmd exists, theres no need to print out any msg,
+// since the cmd itself will
 // print out for us
 void	cmd_not_found(t_cmdlst *node)
 {

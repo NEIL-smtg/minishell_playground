@@ -7,6 +7,7 @@ MAN_FILES	=	main signal/ft_signal_handling utils/utils utils/free \
 				redirections/ft_redirections redirections/ft_heredoc \
 				redirections/ft_redirlst redirections/ft_redir_exec \
 				redirections/ft_shell_output redirections/ft_redirect_output\
+				redirections/ft_redir_utils \
 				builtins/ft_builtin builtins/ft_cd builtins/ft_echo \
 				builtins/ft_env builtins/ft_export builtins/ft_pwd builtins/ft_unset \
 				error/ft_error
@@ -18,11 +19,11 @@ SRCS		=	$(addprefix $(SRC_DIR), $(addsuffix .c, $(MAN_FILES)))
 OBJS		=	$(addprefix $(OBJS_DIR), $(addsuffix .o, $(MAN_FILES)))
 GCC			=	gcc
 CFLAGS		=	-Wall -Werror -Wextra
-# INC			=	-I/usr/local/opt/readline/include/
-INC			=	-I/opt/homebrew/Cellar/readline/8.2.1/include/
+INC			=	-I/usr/local/opt/readline/include/
+# INC			=	-I/opt/homebrew/Cellar/readline/8.2.1/include/
 INC			+=	-I include/
-# RL			=	-L/usr/local/opt/readline/lib/
-RL			=	-L/opt/homebrew/Cellar/readline/8.2.1/lib/
+RL			=	-L/usr/local/opt/readline/lib/
+# RL			=	-L/opt/homebrew/Cellar/readline/8.2.1/lib/
 RL			+=	-lreadline
 RM			=	rm -rf
 FSAN		=	-fsanitize=address -g3

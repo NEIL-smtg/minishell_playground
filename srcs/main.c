@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 21:45:38 by suchua            #+#    #+#             */
-/*   Updated: 2023/05/05 02:30:39 by suchua           ###   ########.fr       */
+/*   Updated: 2023/05/05 21:39:44 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,11 +44,10 @@ void	get_input(t_shell *info)
 			continue ;
 		}
 		add_history(info->input_line);
-		ft_parse_input(info);
 		interpret_cmd(info->input_line, &info->cmdlst);
 		ft_parse_wildcard(info);
 		// print_lst(info->cmdlst);
-		ft_cmdexec(info);
+		// ft_cmdexec(info);
 		ft_free_cmdlst(&info->cmdlst);
 		free(info->input_line);
 	}

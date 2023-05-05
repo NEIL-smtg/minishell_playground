@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 19:22:17 by suchua            #+#    #+#             */
-/*   Updated: 2023/05/05 02:19:10 by suchua           ###   ########.fr       */
+/*   Updated: 2023/05/05 21:33:51 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ typedef struct s_shell
 	char				*input_line;
 	int					ms_status;
 	int					fd[2];
+	int					heredoc_fd[2];
 	int					prevfd;
 	t_cmdlst			*cmdlst;
 	t_redirlst			*infile;
@@ -92,6 +93,7 @@ void	ft_parse_input(t_shell *info);
 void	ft_parse_wildcard(t_shell *info);
 
 //	redirection
+int		redir_within_quotes(char *cmd);
 int		set_redir(t_shell *info, t_cmdlst **node);
 void	ft_redir_exec(t_shell *info, t_cmdlst *node);
 void	redirect_output(int piping, t_shell *info, char *cmd);
