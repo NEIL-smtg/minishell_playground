@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/18 16:29:44 by suchua            #+#    #+#             */
-/*   Updated: 2023/05/11 18:29:38 by suchua           ###   ########.fr       */
+/*   Updated: 2023/05/11 20:21:32 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static char	*search_result(t_shell *info, char *needle)
 }
 
 //	i = input index, j = new index
-static void	overwrite_with_env_value(t_shell *info, t_cmdlst **node,
+static void	overwrite_with_env_value(t_shell *info, char *cmd,
 									t_vars *vars)
 {
 	char	*res;
@@ -50,17 +50,19 @@ static void	overwrite_with_env_value(t_shell *info, t_cmdlst **node,
 	char	*tmp;
 
 	k = vars->i + 1;
-	while ((*node)->cmd[k] && ft_isalpha((*node)->cmd[k]))
+	while (cmd[k] && ft_isalpha(cmd[k]))
 		++k;
-	needle = ft_substr((*node)->cmd, vars->i + 1, k - vars->i - 1);
+	if (k == vars->i + 1 && cmd[k] == '?')
+		k++;
+	needle = ft_substr(cmd, vars->i + 1, k - vars->i - 1);
 	res = search_result(info, needle);
 	if (!res)
-		res = ft_substr((*node)->cmd, vars->i, k);
+		res = ft_calloc(ft_strlen(cmd) - k + 1, sizeof(char));
 	tmp = ft_strjoin(vars->new, res);
-	tmp = gnl_strjoin(tmp, &(*node)->cmd[k]);
+	tmp = gnl_strjoin(tmp, &cmd[k]);
 	vars->j += ft_strlen(res);
 	vars->i += ft_strlen(needle);
-	ft_memset(&tmp[vars->j], 0, ft_strlen(&tmp[vars->j]));
+	memset(&tmp[vars->j], 0, ft_strlen(&tmp[vars->j]));
 	free(res);
 	free(vars->new);
 	free(needle);
@@ -82,9 +84,9 @@ static void	generate_new_input(t_shell *info, t_cmdlst **node, int quote)
 		else if (quote == (*node)->cmd[vars.i])
 			quote = -1;
 		else if ((quote == -1 || quote == 34) && (*node)->cmd[vars.i] == '$')
-			overwrite_with_env_value(info, node, &vars);
+			overwrite_with_env_value(info, (*node)->cmd, &vars);
 		else
-			vars.new[vars.j++] = (*node)->cmd[vars.i];
+			vars.new[(vars.j)++] = (*node)->cmd[vars.i];
 	}
 	free((*node)->cmd);
 	(*node)->cmd = vars.new;
@@ -102,7 +104,7 @@ void	no_quote_parsing(t_shell *info, t_cmdlst **node)
 	while ((*node)->cmd[++(vars.i)])
 	{
 		if ((*node)->cmd[vars.i] == '$')
-			overwrite_with_env_value(info, node, &vars);
+			overwrite_with_env_value(info, (*node)->cmd, &vars);
 		else
 			vars.new[vars.j++] = (*node)->cmd[vars.i];
 	}
@@ -113,10 +115,7 @@ void	no_quote_parsing(t_shell *info, t_cmdlst **node)
 void	ft_parse_input(t_shell *info, t_cmdlst **node)
 {
 	if (ft_strchr((*node)->cmd, 34) || ft_strchr((*node)->cmd, 39))
-	{
 		generate_new_input(info, node, -1);
-		return ;
-	}
 	else
 		no_quote_parsing(info, node);
 }

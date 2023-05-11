@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 22:12:19 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/24 02:12:32 by suchua           ###   ########.fr       */
+/*   Updated: 2023/05/11 20:14:10 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	ft_echo(char **split, char *cmd, t_shell *info)
 	int		flag;
 
 	flag = 0;
-	if (!ft_strncmp(split[1], "-n", 3))
+	if (split[1] && !ft_strncmp(split[1], "-n", 3))
 		flag = 1;
 	print_echo_str(cmd);
 	if (flag)
