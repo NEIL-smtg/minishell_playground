@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_redir_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
+/*   By: mmuhamad <mmuhamad@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 20:08:04 by suchua            #+#    #+#             */
-/*   Updated: 2023/05/06 01:59:55 by suchua           ###   ########.fr       */
+/*   Updated: 2023/05/11 15:10:38 by mmuhamad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,4 +36,23 @@ int	redir_within_quotes(char *cmd)
 			return (0);
 	}
 	return (1);
+}
+
+int	ft_parse_redir(t_cmdlst **node)
+{
+	int		i;
+	char	*check;
+
+	i = 0;
+	check = ft_strrchr((*node)->cmd, '>');
+	if (!check)
+		return (1);
+	while (check[i++])
+	{
+		if (check[i] == 34)
+			return (1);
+		if (check[i] == 39)
+			return (1);
+	}
+	return (0);
 }

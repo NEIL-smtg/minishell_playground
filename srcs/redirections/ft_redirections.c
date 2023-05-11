@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_redirections.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
+/*   By: mmuhamad <mmuhamad@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/15 23:46:42 by suchua            #+#    #+#             */
-/*   Updated: 2023/05/06 02:22:49 by suchua           ###   ########.fr       */
+/*   Updated: 2023/05/11 15:10:26 by mmuhamad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static void	build_redirlst(char *filename, t_shell *info, int type)
 		fd = open(filename, O_RDONLY);
 	else if (type == R2)
 		fd = open(filename, O_RDWR | O_APPEND | O_CREAT, 0000644);
-	else if (type == R1)
+	else
 		fd = open(filename, O_RDWR | O_TRUNC | O_CREAT, 0000644);
 	if (fd == -1)
 	{
@@ -31,12 +31,12 @@ static void	build_redirlst(char *filename, t_shell *info, int type)
 	}
 	if (type == L1)
 		redirlst_addback(&info->infile, filename, fd);
-	else if (type == R2 || type == R1)	
+	else if (type == R2 || type == R1)
 		redirlst_addback(&info->outfile, filename, fd);
 	free(filename);
 }
 
-static void	trim_cmd(t_cmdlst **node)
+void	trim_cmd(t_cmdlst **node, int sq, int dq)
 {
 	t_cmdlst	*tmp;
 	int			i;
@@ -47,7 +47,11 @@ static void	trim_cmd(t_cmdlst **node)
 	i = -1;
 	while (tmp->cmd[++i])
 	{
-		if (tmp->cmd[i] == '<' || tmp->cmd[i] == '>')
+		if (tmp->cmd[i] == 34)
+			dq = !dq;
+		else if (tmp->cmd[i] == 39)
+			sq = !sq;
+		if ((tmp->cmd[i] == '<' || tmp->cmd[i] == '>') && !dq && !sq)
 		{
 			tmp->cmd[i] = 32;
 			flag = 1;
@@ -68,7 +72,8 @@ static int	redir_decider(t_shell *info, t_cmdlst **node)
 {
 	if (!info->infile && !info->outfile)
 		return (0);
-	trim_cmd(node);
+	trim_cmd(node, 0, 0);
+	ft_parse_input(info, node);
 	ft_redir_exec(info, *node);
 	ft_free_infile_outfile(info);
 	return (1);
@@ -78,18 +83,26 @@ static void	scan_redir(t_shell *info, t_cmdlst **node)
 {
 	t_cmdlst	*tmp;
 	int			i;
+	int			sq;
+	int			dq;
 
+	dq = 0;
+	sq = 0;
 	i = -1;
 	tmp = *node;
 	while (tmp->cmd[++i])
 	{
-		if (!ft_strncmp("<<", &(tmp->cmd[i]), 2))
+		if (tmp->cmd[i] == 34)
+			dq = !dq;
+		else if (tmp->cmd[i] == 39)
+			sq = !sq;
+		else if (!ft_strncmp("<<", &(tmp->cmd[i]), 2) && !dq && !sq)
 			heredoc(get_limiter(&tmp->cmd[i + 2]), info, tmp->next);
-		else if (tmp->cmd[i] == '<')
+		else if (tmp->cmd[i] == '<' && !dq && !sq)
 			build_redirlst(get_limiter(&tmp->cmd[i + 1]), info, L1);
-		else if (!ft_strncmp(">>", &(tmp->cmd[i]), 2))
+		else if (!ft_strncmp(">>", &(tmp->cmd[i]), 2) && !dq && !sq)
 			build_redirlst(get_limiter(&tmp->cmd[i + 2]), info, R2);
-		else if (tmp->cmd[i] == '>')
+		else if (tmp->cmd[i] == '>' && !dq && !sq)
 			build_redirlst(get_limiter(&tmp->cmd[i + 1]), info, R1);
 		if (info->open_error == -1)
 			return ;
@@ -101,12 +114,10 @@ static void	scan_redir(t_shell *info, t_cmdlst **node)
 
 int	set_redir(t_shell *info, t_cmdlst **node)
 {
-	if (!ft_strchr((*node)->cmd, '>') && !ft_strchr((*node)->cmd, '<'))
-		return (0);
-	if (redir_within_quotes((*node)->cmd))
+	if (ft_parse_redir(node))
 		return (0);
 	info->infile = NULL;
-	info->outfile = NULL;		
+	info->outfile = NULL;
 	scan_redir(info, node);
 	return (redir_decider(info, node));
 }

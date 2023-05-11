@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_parse_input.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
+/*   By: mmuhamad <mmuhamad@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/18 16:29:44 by suchua            #+#    #+#             */
-/*   Updated: 2023/05/05 21:30:04 by suchua           ###   ########.fr       */
+/*   Updated: 2023/05/11 14:30:29 by mmuhamad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static char	*search_result(t_shell *info, char *needle)
 }
 
 //	i = input index, j = new index
-static void	overwrite_with_env_value(char **new, t_shell *info, int *i, int *j)
+static void	overwrite_with_env_value(char **new, t_shell *info, t_cmdlst **node, int *i, int *j)
 {
 	char	*res;
 	int		k;
@@ -42,14 +42,14 @@ static void	overwrite_with_env_value(char **new, t_shell *info, int *i, int *j)
 	char	*tmp;
 
 	k = *i + 1;
-	while (info->input_line[k] && ft_isalpha(info->input_line[k]))
+	while ((*node)->cmd[k] && ft_isalpha((*node)->cmd[k]))
 		++k;
-	needle = ft_substr(info->input_line, *i + 1, k - *i);
+	needle = ft_substr((*node)->cmd, *i + 1, k - *i - 1);
 	res = search_result(info, needle);
 	if (!res)
-		res = ft_substr(info->input_line, *i, k);
+		res = ft_substr((*node)->cmd, *i, k);
 	tmp = ft_strjoin(*new, res);
-	tmp = gnl_strjoin(tmp, &info->input_line[k]);
+	tmp = gnl_strjoin(tmp, &(*node)->cmd[k]);
 	*j += ft_strlen(res);
 	*i += ft_strlen(needle);
 	ft_memset(&tmp[*j], 0, ft_strlen(&tmp[*j]));
@@ -59,62 +59,62 @@ static void	overwrite_with_env_value(char **new, t_shell *info, int *i, int *j)
 	*new = tmp;
 }
 
-static void	generate_new_input(t_shell *info)
+static void	generate_new_input(t_shell *info, t_cmdlst **node)
 {
 	int		i;
 	int		j;
 	char	*new;
 	int		quote;
 
-	new = ft_calloc(ft_strlen(info->input_line), sizeof(char));
+	new = ft_calloc(ft_strlen((*node)->cmd), sizeof(char));
 	i = -1;
 	j = 0;
 	quote = -1;
-	while (info->input_line[++i])
+	while ((*node)->cmd[++i])
 	{
-		if (quote == -1 && (info->input_line[i] == 34
-				|| info->input_line[i] == 39))
-			quote = info->input_line[i];
-		else if (quote == info->input_line[i])
+		if (quote == -1 && ((*node)->cmd[i] == 34
+				|| (*node)->cmd[i] == 39))
+			quote = (*node)->cmd[i];
+		else if (quote == (*node)->cmd[i])
 			quote = -1;
-		else if ((quote == -1 || quote == 34) && info->input_line[i] == '$')
-			overwrite_with_env_value(&new, info, &i, &j);
+		else if ((quote == -1 || quote == 34) && (*node)->cmd[i] == '$')
+			overwrite_with_env_value(&new, info, node, &i, &j);
 		else
-			new[j++] = info->input_line[i];
+			new[j++] = (*node)->cmd[i];
 	}
-	free(info->input_line);
-	info->input_line = new;
+	free((*node)->cmd);
+	(*node)->cmd = new;
 }
 
-void	no_quote_parsing(t_shell *info)
+void	no_quote_parsing(t_shell *info, t_cmdlst **node)
 {
 	int		i;
 	int		j;
 	char	*new;
 
-	if (!ft_strchr(info->input_line, '$'))
+	if (!ft_strchr((*node)->cmd, '$'))
 		return ;
 	i = -1;
 	j = 0;
-	new = ft_calloc(ft_strlen(info->input_line), sizeof(char));
-	while (info->input_line[++i])
+	new = ft_calloc(ft_strlen((*node)->cmd), sizeof(char));
+	while ((*node)->cmd[++i])
 	{
-		if (info->input_line[i] == '$')
-			overwrite_with_env_value(&new, info, &i, &j);
+		if ((*node)->cmd[i] == '$')
+			overwrite_with_env_value(&new, info, node, &i, &j);
 		else
-			new[j++] = info->input_line[i];
+			new[j++] = (*node)->cmd[i];
 	}
-	free(info->input_line);
-	info->input_line = new;
+	free((*node)->cmd);
+	(*node)->cmd = new;
 }
 
-void	ft_parse_input(t_shell *info)
+void	ft_parse_input(t_shell *info, t_cmdlst **node)
 {
-	if (ft_strchr(info->input_line, 34) || ft_strchr(info->input_line, 39))
+	if (ft_strchr((*node)->cmd, 34) || ft_strchr((*node)->cmd, 39))
 	{
-		generate_new_input(info);
+		generate_new_input(info, node);
 		return ;
 	}
 	else
-		no_quote_parsing(info);
+		no_quote_parsing(info, node);
 }

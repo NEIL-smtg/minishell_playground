@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
+/*   By: mmuhamad <mmuhamad@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 19:22:17 by suchua            #+#    #+#             */
-/*   Updated: 2023/05/06 02:40:06 by suchua           ###   ########.fr       */
+/*   Updated: 2023/05/11 14:59:59 by mmuhamad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ typedef struct s_shell
 	int					heredoc_fd[2];
 	int					prevfd;
 	int					open_error;
+	t_cmdlst			*cmd;
 	t_cmdlst			*cmdlst;
 	t_redirlst			*infile;
 	t_redirlst			*outfile;
@@ -61,7 +62,8 @@ int		dangling_redir(char *str);
 void	init_signal(void);
 
 //	parse input (manage wildcard, env variables)
-void	ft_parse_input(t_shell *info);
+// void	ft_parse_input(t_shell *info);
+void	ft_parse_input(t_shell *info, t_cmdlst **node);
 void	ft_parse_wildcard(t_shell *info);
 void	interpret_cmd(char *cmd, t_cmdlst **lst);
 
@@ -71,6 +73,8 @@ int		set_redir(t_shell *info, t_cmdlst **node);
 void	ft_redir_exec(t_shell *info, t_cmdlst *node);
 void	redirect_output(int piping, t_shell *info, char *cmd);
 void	shell_output(int piping, t_shell *info, char *cmd);
+int		ft_parse_redir(t_cmdlst **node);
+void	trim_cmd(t_cmdlst **node, int sq, int dq);
 
 //	build redirection lst
 void	redirlst_addback(t_redirlst **rlst, char *filename, int fd);

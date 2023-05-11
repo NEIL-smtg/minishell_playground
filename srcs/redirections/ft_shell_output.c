@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_shell_output.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
+/*   By: mmuhamad <mmuhamad@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 23:36:16 by suchua            #+#    #+#             */
-/*   Updated: 2023/05/05 19:51:22 by suchua           ###   ########.fr       */
+/*   Updated: 2023/05/11 15:12:32 by mmuhamad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,10 @@ static void	child_output(t_shell *info, int piping, char *cmd)
 		close(info->fd[1]);
 	}
 	if (info->prevfd != -1)
+	{
 		dup2(info->prevfd, 0);
+		close(info->prevfd);
+	}
 	if (!is_builtin(s_cmd, info, cmd))
 		execve(get_cmd_path(s_cmd[0]), s_cmd, info->ms_env);
 	exit(127);
