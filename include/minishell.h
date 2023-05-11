@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmuhamad <mmuhamad@student.42kl.edu.my>    +#+  +:+       +#+        */
+/*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 19:22:17 by suchua            #+#    #+#             */
-/*   Updated: 2023/05/11 14:59:59 by mmuhamad         ###   ########.fr       */
+/*   Updated: 2023/05/11 18:12:31 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ typedef struct s_shell
 	int					heredoc_fd[2];
 	int					prevfd;
 	int					open_error;
-	t_cmdlst			*cmd;
+	int					wildcard_error;
 	t_cmdlst			*cmdlst;
 	t_redirlst			*infile;
 	t_redirlst			*outfile;
@@ -74,7 +74,6 @@ void	ft_redir_exec(t_shell *info, t_cmdlst *node);
 void	redirect_output(int piping, t_shell *info, char *cmd);
 void	shell_output(int piping, t_shell *info, char *cmd);
 int		ft_parse_redir(t_cmdlst **node);
-void	trim_cmd(t_cmdlst **node, int sq, int dq);
 
 //	build redirection lst
 void	redirlst_addback(t_redirlst **rlst, char *filename, int fd);
@@ -88,6 +87,7 @@ int		is_curr_dir(char *cmd, int i);
 char	*get_target(char *cmd, int i);
 int		target_found(char *file, char *target);
 void	files_addback(t_files **files, char *file, int cmd_type);
+int		wildcard_within_quotes(char *cmd, int stop);
 
 //	free stuff
 void	free_everything(t_shell *info);
@@ -125,5 +125,6 @@ void	ft_cd(char **s_cmd, t_shell *info);
 
 // prompt error when cmd not found
 void	cmd_not_found(t_cmdlst *node, t_shell *info);
+void	wildcard_error(char *target, t_shell *info);
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmuhamad <mmuhamad@student.42kl.edu.my>    +#+  +:+       +#+        */
+/*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 21:45:38 by suchua            #+#    #+#             */
-/*   Updated: 2023/05/11 14:53:42 by mmuhamad         ###   ########.fr       */
+/*   Updated: 2023/05/11 17:50:12 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ void	init(t_shell *info, char **env)
 	term.c_lflag &= ~ECHOCTL;
 	tcsetattr(STDIN_FILENO, TCSANOW, &term);
 	info->open_error = 0;
+	info->wildcard_error = 0;
 }
 
 void	get_input(t_shell *info)
@@ -47,6 +48,8 @@ void	get_input(t_shell *info)
 		add_history(info->input_line);
 		interpret_cmd(info->input_line, &info->cmdlst);
 		ft_parse_wildcard(info);
+		if (info->wildcard_error == -1)
+			continue ;
 		ft_cmdexec(info);
 		ft_free_cmdlst(&info->cmdlst);
 		free(info->input_line);

@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 18:36:13 by suchua            #+#    #+#             */
-/*   Updated: 2023/05/05 02:07:50 by suchua           ###   ########.fr       */
+/*   Updated: 2023/05/11 15:00:40 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,8 @@ char	*get_target(char *cmd, int i)
 {
 	int		j;
 
+	while (cmd[i] && cmd[i] == '*')
+		++i;
 	j = i;
 	while (cmd[j] && !ft_isspace(cmd[j]))
 		++j;
@@ -93,4 +95,25 @@ void	files_addback(t_files **files, char *file, int cmd_type)
 			last = last->next;
 		last->next = new;
 	}
+}
+
+int	wildcard_within_quotes(char *cmd, int stop)
+{
+	int		i;
+	int		sq;
+	int		dq;
+
+	i = -1;
+	dq = 0;
+	sq = 0;
+	while (++i < stop)
+	{
+		if (cmd[i] == 34)
+			dq = !dq;
+		if (cmd[i] == 39)
+			sq = !sq;
+	}
+	if (!dq && !sq)
+		return (0);
+	return (1);
 }

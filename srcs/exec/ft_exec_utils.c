@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/06 02:30:39 by suchua            #+#    #+#             */
-/*   Updated: 2023/05/06 02:39:33 by suchua           ###   ########.fr       */
+/*   Updated: 2023/05/11 15:03:02 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	wait_child_process(t_shell *info)
 		continue ;
 }
 
-static int skip(t_cmdlst *node)
+static int	skip(t_cmdlst *node)
 {
 	return ((node->next->within_brac || !is_doubles(node->next->cmd)));
 }

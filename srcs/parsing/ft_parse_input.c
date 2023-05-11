@@ -3,14 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   ft_parse_input.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmuhamad <mmuhamad@student.42kl.edu.my>    +#+  +:+       +#+        */
+/*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/18 16:29:44 by suchua            #+#    #+#             */
-/*   Updated: 2023/05/11 14:30:29 by mmuhamad         ###   ########.fr       */
+/*   Updated: 2023/05/11 18:29:38 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+typedef struct s_vars
+{
+	char	*new;
+	int		i;
+	int		j;
+}	t_vars;
 
 static char	*search_result(t_shell *info, char *needle)
 {
@@ -34,85 +41,80 @@ static char	*search_result(t_shell *info, char *needle)
 }
 
 //	i = input index, j = new index
-static void	overwrite_with_env_value(char **new, t_shell *info, t_cmdlst **node, int *i, int *j)
+static void	overwrite_with_env_value(t_shell *info, t_cmdlst **node,
+									t_vars *vars)
 {
 	char	*res;
 	int		k;
 	char	*needle;
 	char	*tmp;
 
-	k = *i + 1;
+	k = vars->i + 1;
 	while ((*node)->cmd[k] && ft_isalpha((*node)->cmd[k]))
 		++k;
-	needle = ft_substr((*node)->cmd, *i + 1, k - *i - 1);
+	needle = ft_substr((*node)->cmd, vars->i + 1, k - vars->i - 1);
 	res = search_result(info, needle);
 	if (!res)
-		res = ft_substr((*node)->cmd, *i, k);
-	tmp = ft_strjoin(*new, res);
+		res = ft_substr((*node)->cmd, vars->i, k);
+	tmp = ft_strjoin(vars->new, res);
 	tmp = gnl_strjoin(tmp, &(*node)->cmd[k]);
-	*j += ft_strlen(res);
-	*i += ft_strlen(needle);
-	ft_memset(&tmp[*j], 0, ft_strlen(&tmp[*j]));
+	vars->j += ft_strlen(res);
+	vars->i += ft_strlen(needle);
+	ft_memset(&tmp[vars->j], 0, ft_strlen(&tmp[vars->j]));
 	free(res);
-	free(*new);
+	free(vars->new);
 	free(needle);
-	*new = tmp;
+	vars->new = tmp;
 }
 
-static void	generate_new_input(t_shell *info, t_cmdlst **node)
+static void	generate_new_input(t_shell *info, t_cmdlst **node, int quote)
 {
-	int		i;
-	int		j;
-	char	*new;
-	int		quote;
+	t_vars	vars;
 
-	new = ft_calloc(ft_strlen((*node)->cmd), sizeof(char));
-	i = -1;
-	j = 0;
-	quote = -1;
-	while ((*node)->cmd[++i])
+	vars.new = ft_calloc(ft_strlen((*node)->cmd), sizeof(char));
+	vars.i = -1;
+	vars.j = 0;
+	while ((*node)->cmd[++(vars.i)])
 	{
-		if (quote == -1 && ((*node)->cmd[i] == 34
-				|| (*node)->cmd[i] == 39))
-			quote = (*node)->cmd[i];
-		else if (quote == (*node)->cmd[i])
+		if (quote == -1 && ((*node)->cmd[vars.i] == 34
+				|| (*node)->cmd[vars.i] == 39))
+			quote = (*node)->cmd[vars.i];
+		else if (quote == (*node)->cmd[vars.i])
 			quote = -1;
-		else if ((quote == -1 || quote == 34) && (*node)->cmd[i] == '$')
-			overwrite_with_env_value(&new, info, node, &i, &j);
+		else if ((quote == -1 || quote == 34) && (*node)->cmd[vars.i] == '$')
+			overwrite_with_env_value(info, node, &vars);
 		else
-			new[j++] = (*node)->cmd[i];
+			vars.new[vars.j++] = (*node)->cmd[vars.i];
 	}
 	free((*node)->cmd);
-	(*node)->cmd = new;
+	(*node)->cmd = vars.new;
 }
 
 void	no_quote_parsing(t_shell *info, t_cmdlst **node)
 {
-	int		i;
-	int		j;
-	char	*new;
+	t_vars	vars;
 
 	if (!ft_strchr((*node)->cmd, '$'))
 		return ;
-	i = -1;
-	j = 0;
-	new = ft_calloc(ft_strlen((*node)->cmd), sizeof(char));
-	while ((*node)->cmd[++i])
+	vars.i = -1;
+	vars.j = 0;
+	vars.new = ft_calloc(ft_strlen((*node)->cmd), sizeof(char));
+	while ((*node)->cmd[++(vars.i)])
 	{
-		if ((*node)->cmd[i] == '$')
-			overwrite_with_env_value(&new, info, node, &i, &j);
+		if ((*node)->cmd[vars.i] == '$')
+			overwrite_with_env_value(info, node, &vars);
 		else
-			new[j++] = (*node)->cmd[i];
+			vars.new[vars.j++] = (*node)->cmd[vars.i];
 	}
 	free((*node)->cmd);
-	(*node)->cmd = new;
+	(*node)->cmd = vars.new;
 }
 
 void	ft_parse_input(t_shell *info, t_cmdlst **node)
 {
 	if (ft_strchr((*node)->cmd, 34) || ft_strchr((*node)->cmd, 39))
 	{
-		generate_new_input(info, node);
+		generate_new_input(info, node, -1);
 		return ;
 	}
 	else

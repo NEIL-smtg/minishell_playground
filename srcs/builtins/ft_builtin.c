@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 22:03:14 by suchua            #+#    #+#             */
-/*   Updated: 2023/04/20 18:38:55 by suchua           ###   ########.fr       */
+/*   Updated: 2023/05/11 18:28:16 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ int	parent_exec(t_shell *info, t_cmdlst *node)
 
 	if (node->next && !ft_strncmp(node->next->cmd, "|", 2))
 		return (0);
+	ft_parse_input(info, &node);
 	flag = 1;
 	s_cmd = ft_split(node->cmd, 32);
 	if (!ft_strncmp("cd", s_cmd[0], 3))

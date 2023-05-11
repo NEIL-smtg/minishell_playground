@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_dangling.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmuhamad <mmuhamad@student.42kl.edu.my>    +#+  +:+       +#+        */
+/*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 00:22:02 by suchua            #+#    #+#             */
-/*   Updated: 2023/05/11 13:36:31 by mmuhamad         ###   ########.fr       */
+/*   Updated: 2023/05/11 17:51:04 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,10 +90,10 @@ int	ft_dangling(char *str, int print)
 		}
 		return (0);
 	}
-	// if (dangling_redir(str))
-	// {
-	// 	add_history(str);
-	// 	return (0);
-	// }
+	if (dangling_redir(str))
+	{
+		add_history(str);
+		return (0);
+	}
 	return (1);
 }

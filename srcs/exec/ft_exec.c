@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_exec.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmuhamad <mmuhamad@student.42kl.edu.my>    +#+  +:+       +#+        */
+/*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 23:45:04 by suchua            #+#    #+#             */
-/*   Updated: 2023/05/11 15:06:28 by mmuhamad         ###   ########.fr       */
+/*   Updated: 2023/05/11 18:03:31 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ static int	exec_pipe(t_shell *info, t_cmdlst **node)
 			return (0);
 		if (skip_permission(info, node))
 			continue ;
-		trim_cmd(node, 0, 0);
 		ft_parse_input(info, node);
 		id = fork();
 		if (id == 0)
@@ -78,8 +77,6 @@ void	ft_cmdexec(t_shell *info)
 	t_cmdlst	*tmp;
 
 	tmp = info->cmdlst;
-	// trim_cmd(&tmp, 0, 0);
-	// ft_parse_input(info, &tmp);
 	while (tmp)
 	{
 		info->prevfd = -1;

@@ -6,13 +6,13 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 02:07:08 by suchua            #+#    #+#             */
-/*   Updated: 2023/05/05 02:07:11 by suchua           ###   ########.fr       */
+/*   Updated: 2023/05/11 15:02:30 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	store_files(char *target, t_files **files, int cmd_type)
+static int	store_files(char *target, t_files **files, int cmd_type)
 {
 	struct dirent	*entry;
 	DIR				*dir;
@@ -33,7 +33,7 @@ int	store_files(char *target, t_files **files, int cmd_type)
 	return (1);
 }
 
-void	overwrite_cmd(t_cmdlst **node, t_files *files, int *i, int j)
+static void	overwrite_cmd(t_cmdlst **node, t_files *files, int *i, int j)
 {
 	char	*front;
 	char	*back;
@@ -61,24 +61,39 @@ void	overwrite_cmd(t_cmdlst **node, t_files *files, int *i, int j)
 	free(middle);
 }
 
-int	manage_wildcard(t_cmdlst **node)
+static int	append_wildcard(t_cmdlst **node, int *i,
+							t_shell *info, t_files **files)
+{
+	int	ret;
+
+	ret = is_curr_dir((*node)->cmd, *i);
+	if (!ret || !store_files(get_target((*node)->cmd, *i + 1),
+			files, ret))
+		return (0);
+	if (!files)
+	{
+		wildcard_error(get_target((*node)->cmd, *i + 1), info);
+		free(info->input_line);
+		return (0);
+	}
+	overwrite_cmd(node, *files, i, *i);
+	ft_free_files_lst(files);
+	return (1);
+}
+
+static int	manage_wildcard(t_cmdlst **node, t_shell *info)
 {
 	int		i;
 	t_files	*files;
-	int		ret;
 
 	i = -1;
 	files = NULL;
 	while ((*node)->cmd[++i])
 	{
-		if ((*node)->cmd[i] == '*')
+		if ((*node)->cmd[i] == '*' && !wildcard_within_quotes((*node)->cmd, i))
 		{
-			ret = is_curr_dir((*node)->cmd, i);
-			if (!ret || !store_files(get_target((*node)->cmd, i + 1),
-					&files, ret))
+			if (!append_wildcard(node, &i, info, &files))
 				return (0);
-			overwrite_cmd(node, files, &i, i);
-			ft_free_files_lst(&files);
 		}
 	}
 	return (1);
@@ -91,7 +106,7 @@ void	ft_parse_wildcard(t_shell *info)
 	node = info->cmdlst;
 	while (node)
 	{
-		if (ft_strchr(node->cmd, '*') && !manage_wildcard(&node))
+		if (ft_strchr(node->cmd, '*') && !manage_wildcard(&node, info))
 			return ;
 		node = node->next;
 	}

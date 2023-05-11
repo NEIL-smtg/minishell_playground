@@ -6,11 +6,34 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 01:21:52 by suchua            #+#    #+#             */
-/*   Updated: 2023/05/06 02:19:02 by suchua           ###   ########.fr       */
+/*   Updated: 2023/05/11 14:08:53 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+//	wildcard error when there not matches
+void	wildcard_error(char *target, t_shell *info)
+{
+	info->wildcard_error = -1;
+	info->ms_status = 256;
+	ft_putstr_fd("minishell : no matches found: ", 2);
+	if (target)
+	{
+		ft_putendl_fd(target, 2);
+		free(target);
+	}
+	else
+		ft_putendl_fd("*", 2);
+}
+
+//	ignore cmd that already prompt error by itself
+static int	ignore(t_shell *info, char *cmd)
+{
+	if (info->open_error == -1 || info->wildcard_error == -1)
+		return (1);
+	return (to_split(cmd));
+}
 
 // if the cmd exists, theres no need to print out any msg,
 // since the cmd itself will
@@ -22,7 +45,7 @@ void	cmd_not_found(t_cmdlst *node, t_shell *info)
 
 	while (node)
 	{
-		if (to_split(node->cmd) || info->open_error == -1)
+		if (ignore(info, node->cmd))
 		{
 			node = node->next;
 			continue ;

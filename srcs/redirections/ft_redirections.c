@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_redirections.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmuhamad <mmuhamad@student.42kl.edu.my>    +#+  +:+       +#+        */
+/*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/15 23:46:42 by suchua            #+#    #+#             */
-/*   Updated: 2023/05/11 15:10:26 by mmuhamad         ###   ########.fr       */
+/*   Updated: 2023/05/11 18:04:52 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,32 +36,28 @@ static void	build_redirlst(char *filename, t_shell *info, int type)
 	free(filename);
 }
 
-void	trim_cmd(t_cmdlst **node, int sq, int dq)
+static void	trim_cmd(t_cmdlst **node, int sq, int dq, int flag)
 {
-	t_cmdlst	*tmp;
-	int			i;
-	int			flag;
+	int	i;
 
-	tmp = *node;
-	flag = 0;
 	i = -1;
-	while (tmp->cmd[++i])
+	while ((*node)->cmd[++i])
 	{
-		if (tmp->cmd[i] == 34)
+		if ((*node)->cmd[i] == 34)
 			dq = !dq;
-		else if (tmp->cmd[i] == 39)
+		else if ((*node)->cmd[i] == 39)
 			sq = !sq;
-		if ((tmp->cmd[i] == '<' || tmp->cmd[i] == '>') && !dq && !sq)
+		if (((*node)->cmd[i] == '<' || (*node)->cmd[i] == '>') && !dq && !sq)
 		{
-			tmp->cmd[i] = 32;
+			(*node)->cmd[i] = 32;
 			flag = 1;
 			continue ;
 		}
-		while (flag && tmp->cmd[i] && ft_isspace(tmp->cmd[i]))
+		while (flag && (*node)->cmd[i] && ft_isspace((*node)->cmd[i]))
 			++i;
-		while (flag && tmp->cmd[i] && !ft_isspace(tmp->cmd[i]))
+		while (flag && (*node)->cmd[i] && !ft_isspace((*node)->cmd[i]))
 		{
-			tmp->cmd[i] = 32;
+			(*node)->cmd[i] = 32;
 			++i;
 		}
 		flag = 0;
@@ -72,22 +68,18 @@ static int	redir_decider(t_shell *info, t_cmdlst **node)
 {
 	if (!info->infile && !info->outfile)
 		return (0);
-	trim_cmd(node, 0, 0);
+	trim_cmd(node, 0, 0, 0);
 	ft_parse_input(info, node);
 	ft_redir_exec(info, *node);
 	ft_free_infile_outfile(info);
 	return (1);
 }
 
-static void	scan_redir(t_shell *info, t_cmdlst **node)
+static void	scan_redir(t_shell *info, t_cmdlst **node, int dq, int sq)
 {
 	t_cmdlst	*tmp;
 	int			i;
-	int			sq;
-	int			dq;
 
-	dq = 0;
-	sq = 0;
 	i = -1;
 	tmp = *node;
 	while (tmp->cmd[++i])
@@ -118,6 +110,6 @@ int	set_redir(t_shell *info, t_cmdlst **node)
 		return (0);
 	info->infile = NULL;
 	info->outfile = NULL;
-	scan_redir(info, node);
+	scan_redir(info, node, 0, 0);
 	return (redir_decider(info, node));
 }
