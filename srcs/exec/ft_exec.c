@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 23:45:04 by suchua            #+#    #+#             */
-/*   Updated: 2023/05/15 15:53:22 by suchua           ###   ########.fr       */
+/*   Updated: 2023/05/15 17:34:18 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static void	ft_exec(t_cmdlst *node, t_shell *info)
 	char	*path;
 
 	s_cmd = ft_split(node->cmd, 32);
-	path = get_cmd_path(s_cmd[0]);
+	path = get_cmd_path(s_cmd[0], info->ms_env);
 	if (info->prevfd != -1 && node->prev && ft_strncmp(node->prev->cmd, ";", 2))
 		dup2(info->prevfd, 0);
 	if (node->next && !ft_strncmp(node->next->cmd, "|", 2))

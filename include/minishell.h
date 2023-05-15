@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 19:22:17 by suchua            #+#    #+#             */
-/*   Updated: 2023/05/11 18:12:31 by suchua           ###   ########.fr       */
+/*   Updated: 2023/05/15 18:19:13 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ int		dangling_dquote(char *str);
 int		dangling_squote(char *str);
 int		dangling_bracket(char *str, int dq, int sq, int echo);
 int		dangling_pipe(char *str);
-int		dangling_redir(char *str);
+int		dangling_redir(char *str, int dq, int sq);
 
 //	signal handling
 void	init_signal(void);
@@ -64,6 +64,8 @@ void	init_signal(void);
 //	parse input (manage wildcard, env variables)
 // void	ft_parse_input(t_shell *info);
 void	ft_parse_input(t_shell *info, t_cmdlst **node);
+void	generate_new_input(t_shell *info, t_cmdlst **node, int quote);
+void	no_quote_parsing(t_shell *info, t_cmdlst **node);
 void	ft_parse_wildcard(t_shell *info);
 void	interpret_cmd(char *cmd, t_cmdlst **lst);
 
@@ -110,7 +112,7 @@ int		cmdlst_is_double(char *s, char *bonus);
 int		instr_split(char *s);
 
 //	utils
-char	*get_cmd_path(char *cmd);
+char	*get_cmd_path(char *cmd, char **env);
 void	swap_str(char **s1, char **s2);
 
 //	builtins

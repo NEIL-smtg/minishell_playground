@@ -1,6 +1,6 @@
 NAME		=	minishell
 MAN_FILES	=	main signal/ft_signal_handling utils/utils utils/free \
-				parsing/ft_parse_input parsing/ft_dangling parsing/ft_dangling_pipe \
+				parsing/ft_parse_input parsing/ft_parse_input_utils parsing/ft_dangling parsing/ft_dangling_pipe \
 				parsing/ft_dangling_redir \
 				wildcard/ft_wildcard wildcard/ft_wildcard_utils \
 				cmdlst/ft_cmdlst cmdlst/ft_cmdlst_utils cmdlst/ft_ms_split\

@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 01:47:17 by suchua            #+#    #+#             */
-/*   Updated: 2023/05/06 02:38:10 by suchua           ###   ########.fr       */
+/*   Updated: 2023/05/15 17:23:19 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static void	redirect_child_process(int flag, t_shell *info,
 	if (info->prevfd != -1)
 		close(info->prevfd);
 	if (!is_builtin(s_cmd, info, cmd))
-		execve(get_cmd_path(s_cmd[0]), s_cmd, info->ms_env);
+		execve(get_cmd_path(s_cmd[0], info->ms_env), s_cmd, info->ms_env);
 	exit(127);
 }
 

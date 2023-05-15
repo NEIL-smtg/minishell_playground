@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 22:12:19 by suchua            #+#    #+#             */
-/*   Updated: 2023/05/11 20:14:10 by suchua           ###   ########.fr       */
+/*   Updated: 2023/05/15 18:14:06 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,13 @@ void	print_echo_str(char *cmd)
 		++i;
 	while (cmd[i] && ft_isspace(cmd[i]))
 		++i;
-	if (!ft_strncmp(&cmd[i], "-n", 2))
+	if (!ft_strncmp(&cmd[i], "-n ", 3))
+	{
 		while (cmd[i] && !ft_isspace(cmd[i]))
 			++i;
+		if (cmd[i] && ft_isspace(cmd[i]))
+			++i;
+	}
 	ft_putstr_fd(&cmd[i], 1);
 }
 

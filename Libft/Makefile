@@ -6,7 +6,7 @@
 #    By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/05 12:01:03 by suchua            #+#    #+#              #
-#    Updated: 2023/04/06 19:47:16 by suchua           ###   ########.fr        #
+#    Updated: 2023/05/15 17:55:58 by suchua           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,7 +32,7 @@ PRINTF_FILES	=	ft_flags ft_print_nb ft_print_nb_utils ft_print_ch  \
 PUT_FILES		=	ft_putchar_fd ft_putendl_fd ft_putnbr_fd ft_putstr_fd
 STR_FILES		=	ft_bzero ft_split ft_strchr ft_strdup ft_striteri ft_strjoin \
 					ft_strlcat ft_strlcpy ft_strlen ft_strmapi ft_strncmp \
-					ft_strnstr ft_strrchr ft_strtrim ft_substr
+					ft_strnstr ft_strrchr ft_strtrim ft_substr ft_2dstrjoin
 TO_FILES		=	ft_tolower ft_toupper
 GNL_FILES		=	get_next_line_bonus get_next_line_utils_bonus
 MATH_FILES		=	ft_pow ft_sqrt

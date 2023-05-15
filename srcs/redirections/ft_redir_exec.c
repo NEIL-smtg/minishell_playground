@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 01:35:34 by suchua            #+#    #+#             */
-/*   Updated: 2023/05/06 02:37:48 by suchua           ###   ########.fr       */
+/*   Updated: 2023/05/15 18:04:56 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ static void	combine_infile(t_shell *info)
 			close(info->fd[1]);
 			close(info->fd[0]);
 			close(tmpin->fd);
-			execve(get_cmd_path("cat"), ft_split("cat ", 32), info->ms_env);
+			execve(get_cmd_path("cat", info->ms_env),
+				ft_split("cat ", 32), info->ms_env);
 			exit(127);
 		}
 		tmpin = tmpin->next;
