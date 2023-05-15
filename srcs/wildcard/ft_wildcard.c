@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 02:07:08 by suchua            #+#    #+#             */
-/*   Updated: 2023/05/11 15:02:30 by suchua           ###   ########.fr       */
+/*   Updated: 2023/05/15 16:18:10 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static int	store_files(char *target, t_files **files, int cmd_type)
 			files_addback(files, entry->d_name, cmd_type);
 		entry = readdir(dir);
 	}
-	free(dir);
+	closedir(dir);
 	if (target)
 		free(target);
 	return (1);
