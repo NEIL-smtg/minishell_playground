@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/26 19:59:48 by suchua            #+#    #+#             */
-/*   Updated: 2023/05/15 18:41:59 by suchua           ###   ########.fr       */
+/*   Updated: 2023/05/17 15:23:16 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,13 @@ static int	validation(char *str, int i)
 	j = i - 1;
 	while (j >= 0 && ft_isspace(str[j]))
 		--j;
+	if (j < 0)
+		++j;
 	k = i + 1;
 	while (str[k] && ft_isspace(str[k]))
 		++k;
+	if (!str[k])
+		--k;
 	if ((str[j] == '<' || str[j] == '>') && str[j] != str[i])
 		return (0);
 	if ((str[k] == '<' || str[k] == '>') && str[k] != str[i])

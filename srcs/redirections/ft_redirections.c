@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/15 23:46:42 by suchua            #+#    #+#             */
-/*   Updated: 2023/05/11 18:04:52 by suchua           ###   ########.fr       */
+/*   Updated: 2023/05/17 15:15:57 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,8 +106,6 @@ static void	scan_redir(t_shell *info, t_cmdlst **node, int dq, int sq)
 
 int	set_redir(t_shell *info, t_cmdlst **node)
 {
-	if (ft_parse_redir(node))
-		return (0);
 	info->infile = NULL;
 	info->outfile = NULL;
 	scan_redir(info, node, 0, 0);

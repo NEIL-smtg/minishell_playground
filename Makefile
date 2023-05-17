@@ -8,7 +8,6 @@ MAN_FILES	=	main signal/ft_signal_handling utils/utils utils/free \
 				redirections/ft_redirections redirections/ft_heredoc \
 				redirections/ft_redirlst redirections/ft_redir_exec \
 				redirections/ft_shell_output redirections/ft_redirect_output\
-				redirections/ft_redir_utils \
 				builtins/ft_builtin builtins/ft_cd builtins/ft_echo \
 				builtins/ft_env builtins/ft_export builtins/ft_pwd builtins/ft_unset \
 				error/ft_error
