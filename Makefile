@@ -42,7 +42,7 @@ $(OBJS_DIR)%.o: $(SRC_DIR)%.c
 	@$(GCC) $(CFLAGS) $(INC) -Iinclude/ -c $< -o $@
 
 $(NAME): $(SRCS)
-	$(GCC) $(FSAN) $(CFLAGS) -Iinclude/ $(INC) $(RL) $(SRCS) $(LIBFT_DIR)$(LIBFT) -o $(NAME)
+	$(GCC) $(CFLAGS) -Iinclude/ $(INC) $(RL) $(SRCS) $(LIBFT_DIR)$(LIBFT) -o $(NAME) -lreadline
 
 $(LIBFT_DIR)$(LIBFT):
 	@make -C $(LIBFT_DIR)
