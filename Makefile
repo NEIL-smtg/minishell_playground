@@ -69,3 +69,6 @@ norm:
 redebug:
 	$(RM) debug
 	make debug
+
+leaks:
+	valgrind --leak-check=full ./$(NAME)

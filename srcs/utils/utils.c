@@ -6,7 +6,7 @@
 /*   By: suchua <suchua@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 20:34:38 by suchua            #+#    #+#             */
-/*   Updated: 2023/09/23 05:56:15 by suchua           ###   ########.fr       */
+/*   Updated: 2023/09/23 06:05:53 by suchua           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,14 @@ char	*get_cmd_path(char *cmd, char **env)
 	int		i;
 	char	*tmp;
 	char	**path;
+	char	*exec_path;
 
 	i = -1;
 	if (!access(cmd, F_OK))
 		return (ft_strdup(cmd));
-	path = ft_split(get_exec_path(env), ':');
+	exec_path = get_exec_path(env);
+	path = ft_split(exec_path, ':');
+	free(exec_path);
 	if (!path)
 		return (ft_strdup(cmd));
 	while (path[++i])
